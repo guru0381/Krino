@@ -1,0 +1,546 @@
+<title>Krino-2B Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column, 1040px max. A mechanism figure, then a three-row left-to-right flow with a stepper panel
+   under it, then the scoring meter. Colour marks WHERE a step runs: teal = dev box (free), amber = Modal GPU or LLM API (paid),
+   violet = release. Everything else is a slate neutral biased toward teal. */
+:root{
+  --bg:#f3f6f7; --panel:#ffffff; --fg:#17232a; --muted:#5c6c75; --line:#cfd9de; --faint:#e6edf0;
+  --laptop:#0e7f84; --laptop-soft:#d9f0f0;
+  --cloud:#b4620a; --cloud-soft:#fbe9d1;
+  --release:#5b48c7; --release-soft:#e6e1fa;
+  --good:#1f8a4c; --warn:#b4620a;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1719; --panel:#162124; --fg:#e7eef0; --muted:#9bb0b8; --line:#2c3b41; --faint:#1d2a2e;
+    --laptop:#4fc3c6; --laptop-soft:#123a3c; --cloud:#f0a04b; --cloud-soft:#3f2a10;
+    --release:#a99af2; --release-soft:#2a2350; --good:#4fcf84; --warn:#f0a04b; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1719; --panel:#162124; --fg:#e7eef0; --muted:#9bb0b8; --line:#2c3b41; --faint:#1d2a2e;
+  --laptop:#4fc3c6; --laptop-soft:#123a3c; --cloud:#f0a04b; --cloud-soft:#3f2a10;
+  --release:#a99af2; --release-soft:#2a2350; --good:#4fcf84; --warn:#f0a04b; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(21px,3vw,27px);font-weight:700;margin-bottom:6px}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{color:var(--muted);max-width:62ch;margin-top:10px;font-size:16px}
+header{display:grid;gap:14px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:6px}
+.stat{display:grid;gap:2px}
+.stat b{font-family:var(--display);font-size:24px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+section{padding-block:30px;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.sub{color:var(--muted);max-width:66ch;margin-bottom:16px}
+figure{margin:0}
+figcaption{font-size:13px;color:var(--muted);margin-top:10px;max-width:70ch}
+.scroller{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.scroller svg{display:block;height:auto}
+#mech{min-width:720px;max-width:100%}
+#flow{min-width:880px;max-width:100%}
+svg text{font-family:var(--body)}
+svg .mono{font-family:var(--mono)}
+.hint{display:none;font-size:12px;color:var(--muted);margin-top:4px}
+@media (max-width:900px){.hint{display:block}}
+
+/* mechanism figure */
+.pulse{fill:var(--laptop)}
+.mech-bar{transform-origin:left center;animation:grow 2.6s ease-in-out infinite alternate}
+.mech-bar.b2{animation-delay:.15s}.mech-bar.b3{animation-delay:.3s}
+@keyframes grow{0%,20%{transform:scaleX(.08)}60%,100%{transform:scaleX(1)}}
+
+/* flow */
+.node{cursor:pointer}
+.node rect.box{fill:var(--panel);stroke:var(--line);stroke-width:1.5;transition:stroke .3s,stroke-width .3s,filter .3s}
+.node .num{fill:var(--panel);font-weight:700;font-size:13px}
+.node .numbg{transition:fill .3s}
+.node .title{font-size:14px;font-weight:600;fill:var(--fg)}
+.node .meta{font-size:11.5px;fill:var(--muted)}
+.node.laptop .numbg{fill:var(--laptop)} .node.cloud .numbg{fill:var(--cloud)} .node.release .numbg{fill:var(--release)} .node.both .numbg{fill:var(--cloud)}
+.node.active rect.box{stroke-width:3}
+.node.laptop.active rect.box{stroke:var(--laptop);filter:drop-shadow(0 0 8px var(--laptop))}
+.node.cloud.active rect.box,.node.both.active rect.box{stroke:var(--cloud);filter:drop-shadow(0 0 8px var(--cloud))}
+.node.release.active rect.box{stroke:var(--release);filter:drop-shadow(0 0 8px var(--release))}
+.node.done .numbg{fill:var(--good)}
+.node .tick{opacity:0;transition:opacity .3s}
+.node.done .tick{opacity:1}
+.edge{fill:none;stroke:var(--line);stroke-width:2;transition:stroke .3s}
+.edge.active{stroke:var(--fg);stroke-dasharray:7 6;animation:flow .9s linear infinite}
+.edge.done{stroke:var(--good)}
+@keyframes flow{to{stroke-dashoffset:-13}}
+.gate{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+.gate-label{font-size:11px;fill:var(--muted)}
+.loop{fill:none;stroke:var(--cloud);stroke-width:2;stroke-dasharray:5 5;opacity:.55}
+.loop.active{opacity:1;animation:flow 1s linear infinite}
+.goal rect{fill:var(--release-soft);stroke:var(--release);stroke-width:1.5}
+.goal text{fill:var(--fg)}
+.goal.active rect{filter:drop-shadow(0 0 10px var(--release))}
+#fa path{fill:context-stroke}
+.node.done .num{opacity:0}
+.goal .big{font-family:var(--display)}
+
+/* stepper panel */
+.panel{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:8px;padding:8px 14px;cursor:pointer}
+button:hover{border-color:var(--fg)}
+button:focus-visible{outline:2px solid var(--laptop);outline-offset:2px}
+button.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.progress{flex:1 1 160px;height:6px;background:var(--faint);border-radius:3px;overflow:hidden;min-width:120px}
+.progress i{display:block;height:100%;width:11%;background:var(--laptop);transition:width .4s}
+.counter{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.detail{display:grid;grid-template-columns:1.4fr 1fr;gap:18px 28px}
+@media (max-width:720px){.detail{grid-template-columns:1fr}}
+.detail h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid transparent}
+.chip.laptop{background:var(--laptop-soft);color:var(--laptop)}
+.chip.cloud,.chip.both{background:var(--cloud-soft);color:var(--cloud)}
+.chip.release{background:var(--release-soft);color:var(--release)}
+.detail .what{margin-top:8px;max-width:62ch}
+.kv{display:grid;gap:10px;align-content:start}
+.kv div{display:grid;gap:2px;padding:10px 12px;background:var(--faint);border-radius:8px}
+.kv b{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.04em;text-transform:uppercase;font-family:var(--mono)}
+.kv span{font-size:14px}
+.cmd{font-family:var(--mono);font-size:12.5px;background:var(--faint);padding:10px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap;margin-top:10px;color:var(--fg)}
+
+/* scoring meter */
+.meter{display:grid;gap:14px;margin-top:8px}
+.row{display:grid;grid-template-columns:150px 1fr 76px;gap:12px;align-items:center}
+@media (max-width:560px){.row{grid-template-columns:110px 1fr 60px}}
+.row .name{font-weight:600}
+.row .name small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+.axes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.axis{display:grid;gap:3px}
+.axis span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.bar{height:10px;background:var(--faint);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:5px;background:var(--muted);transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.bar i.low{background:var(--warn)}
+.row.target .bar i{background:var(--laptop)}
+.score{font-family:var(--display);font-size:26px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.row.target .score{color:var(--laptop)}
+.formula{font-family:var(--mono);font-size:12.5px;color:var(--muted);background:var(--faint);padding:10px 12px;border-radius:8px;margin-top:14px;overflow-x:auto;white-space:nowrap}
+.note{font-size:13px;color:var(--muted);margin-top:10px;max-width:70ch}
+
+/* budget strip */
+.budget{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
+.budget div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;gap:2px}
+.budget b{font-family:var(--display);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.budget span{font-size:12.5px;color:var(--muted)}
+.rules{display:grid;gap:8px;margin-top:14px;max-width:70ch;padding-left:18px}
+.rules li{font-size:14px}
+
+@media (prefers-reduced-motion: reduce){
+  .mech-bar,.edge.active,.loop.active{animation:none}
+  .mech-bar{transform:none}
+  .bar i{transition:none}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">Krino-2B · build plan · κρίνω, to decide</p>
+  <h1>From a browser tab to #1 at 2B on JevBench</h1>
+  <p class="lede">A 2-billion-parameter decision model: it reads a piece of text and typed questions, and answers with calibrated probabilities in one forward pass. Nothing runs on your own computer: a free GitHub Codespace is the dev box and Modal runs every GPU job. Here is the whole path, step by step, with what runs where and what each step costs.</p>
+  <div class="stats">
+    <div class="stat"><b>38.9</b><span>the bar: Malkuth-2B, current #1 at ≤2B</span></div>
+    <div class="stat"><b>50–58</b><span>our target JevBench score</span></div>
+    <div class="stat"><b>9</b><span>steps</span></div>
+    <div class="stat"><b>~$245</b><span>planned spend, $500 ceiling</span></div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--laptop)"></i>Dev box (Codespace), free</span>
+    <span><i style="background:var(--cloud)"></i>Modal GPU or LLM API, paid by the second</span>
+    <span><i style="background:var(--release)"></i>Release</span>
+  </div>
+</header>
+
+<section>
+  <h2>1 · What we are building</h2>
+  <p class="sub">The model never writes text. It scores each answer option against the question and returns a probability for every option, so software can act on the answer directly.</p>
+  <figure>
+    <div class="scroller">
+    <svg id="mech" viewBox="0 0 960 300" role="img" aria-label="A request with state, a question and three options goes into a 2B torso with a trained adapter; a pointer head scores each option and a temperature-scaled softmax returns probabilities.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--fg)"/></marker>
+        <path id="p1" d="M250 150 L300 150"/>
+        <path id="p2" d="M520 150 L570 150"/>
+        <path id="p3" d="M740 150 L790 150"/>
+      </defs>
+      <!-- input -->
+      <text x="20" y="42" class="mono" font-size="11" fill="var(--muted)" letter-spacing="1">REQUEST</text>
+      <rect x="20" y="54" width="230" height="56" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="32" y="76" font-size="12" font-weight="600" fill="var(--fg)">state</text>
+      <text x="32" y="96" font-size="12" fill="var(--muted)">"Shoes arrived late, wrong size,</text>
+      <rect x="20" y="122" width="230" height="40" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="32" y="140" font-size="12" font-weight="600" fill="var(--fg)">question</text>
+      <text x="32" y="155" font-size="12" fill="var(--muted)">Which team should handle this?</text>
+      <rect x="20" y="174" width="230" height="86" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="32" y="193" font-size="12" font-weight="600" fill="var(--fg)">options</text>
+      <text x="32" y="213" font-size="12" fill="var(--muted)">returns · shipping · billing</text>
+      <text x="32" y="233" font-size="11.5" fill="var(--muted)">any number, any wording, set at</text>
+      <text x="32" y="248" font-size="11.5" fill="var(--muted)">request time</text>
+      <!-- arrows with pulses -->
+      <line x1="250" y1="150" x2="298" y2="150" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="520" y1="150" x2="568" y2="150" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="740" y1="150" x2="788" y2="150" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <circle r="4" class="pulse"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.22;1" calcMode="linear"><mpath href="#p1"/></animateMotion></circle>
+      <circle r="4" class="pulse"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;0.3;0.52;1" calcMode="linear"><mpath href="#p2"/></animateMotion></circle>
+      <circle r="4" class="pulse"><animateMotion dur="2.6s" repeatCount="indefinite" keyPoints="0;0;1;1" keyTimes="0;0.58;0.8;1" calcMode="linear"><mpath href="#p3"/></animateMotion></circle>
+      <!-- torso -->
+      <text x="300" y="42" class="mono" font-size="11" fill="var(--muted)" letter-spacing="1">TORSO</text>
+      <rect x="300" y="54" width="220" height="206" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="312" y="80" font-size="13" font-weight="600" fill="var(--fg)">Qwen3.5-2B-Base</text>
+      <text x="312" y="98" font-size="12" fill="var(--muted)">2.0B weights, frozen</text>
+      <rect x="312" y="112" width="196" height="34" rx="4" fill="var(--laptop-soft)" stroke="var(--laptop)" stroke-width="1"/>
+      <text x="322" y="128" font-size="12" font-weight="600" fill="var(--fg)">LoRA adapter, rank 16</text>
+      <text x="322" y="141" font-size="11.5" fill="var(--muted)">~18M weights, trained by us</text>
+      <text x="312" y="172" font-size="12" fill="var(--muted)">one pass over state + question</text>
+      <text x="312" y="188" font-size="12" fill="var(--muted)">+ options; nothing generated</text>
+      <text x="312" y="214" font-size="12" fill="var(--muted)">state is cached, so extra</text>
+      <text x="312" y="230" font-size="12" fill="var(--muted)">questions cost only their tokens</text>
+      <text x="312" y="250" class="mono" font-size="11" fill="var(--muted)">~20–60 ms on a GPU</text>
+      <!-- head -->
+      <text x="570" y="42" class="mono" font-size="11" fill="var(--muted)" letter-spacing="1">POINTER HEAD</text>
+      <rect x="570" y="54" width="170" height="206" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="582" y="80" font-size="13" font-weight="600" fill="var(--fg)">score each option</text>
+      <text x="582" y="98" font-size="12" fill="var(--muted)">option vs. decide state</text>
+      <text x="582" y="124" font-size="12" fill="var(--muted)">~1M weights, trained</text>
+      <rect x="582" y="140" width="146" height="30" rx="4" fill="var(--laptop-soft)" stroke="var(--laptop)" stroke-width="1"/>
+      <text x="592" y="159" font-size="12" font-weight="600" fill="var(--fg)">÷ temperature</text>
+      <text x="582" y="196" font-size="12" fill="var(--muted)">one T fitted on held-out</text>
+      <text x="582" y="211" font-size="12" fill="var(--muted)">data, so 0.8 means</text>
+      <text x="582" y="226" font-size="12" fill="var(--muted)">right 80% of the time</text>
+      <text x="582" y="250" class="mono" font-size="11" fill="var(--muted)">then softmax</text>
+      <!-- output -->
+      <text x="790" y="42" class="mono" font-size="11" fill="var(--muted)" letter-spacing="1">ANSWER</text>
+      <rect x="790" y="54" width="150" height="206" rx="6" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="802" y="86" font-size="12" fill="var(--fg)">returns</text>
+      <rect x="802" y="92" width="116" height="10" rx="5" fill="var(--faint)"/>
+      <rect x="802" y="92" width="55" height="10" rx="5" fill="var(--laptop)" class="mech-bar"/>
+      <text x="930" y="86" font-size="12" text-anchor="end" class="mono" fill="var(--fg)">0.47</text>
+      <text x="802" y="128" font-size="12" fill="var(--fg)">shipping</text>
+      <rect x="802" y="134" width="116" height="10" rx="5" fill="var(--faint)"/>
+      <rect x="802" y="134" width="32" height="10" rx="5" fill="var(--laptop)" class="mech-bar b2"/>
+      <text x="930" y="128" font-size="12" text-anchor="end" class="mono" fill="var(--fg)">0.28</text>
+      <text x="802" y="170" font-size="12" fill="var(--fg)">billing</text>
+      <rect x="802" y="176" width="116" height="10" rx="5" fill="var(--faint)"/>
+      <rect x="802" y="176" width="29" height="10" rx="5" fill="var(--laptop)" class="mech-bar b3"/>
+      <text x="930" y="170" font-size="12" text-anchor="end" class="mono" fill="var(--fg)">0.25</text>
+      <text x="802" y="212" font-size="12" fill="var(--muted)">choice: returns</text>
+      <text x="802" y="228" font-size="12" fill="var(--muted)">confidence: 0.21, so route</text>
+      <text x="802" y="243" font-size="12" fill="var(--muted)">this one to a person</text>
+    </svg>
+    </div>
+    <p class="hint">Scroll the figure sideways on a phone.</p>
+    <figcaption>Request in, probabilities out. The torso and the adapter are what we train; the temperature is what we fit; everything else is fixed. A low confidence is useful information: it says "send this to a human".</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>2 · The nine steps</h2>
+  <p class="sub">Press Play to walk through the plan, or click any step. Colour is where it runs. Step 8 loops back to Step 5 until the model stops improving or the budget runs out.</p>
+  <figure>
+    <div class="scroller" id="flowbox">
+    <svg id="flow" viewBox="0 0 960 600" role="img" aria-label="Nine steps in three rows: setup, accounts and baseline; eval protocol, stage-2 training and calibration; our own data, an iterate loop back to step 5, and release. A goal banner at the bottom reads number one at 2B.">
+      <defs>
+        <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--line)"/></marker>
+      </defs>
+      <g color="var(--line)">
+      <!-- row 1 edges -->
+      <path class="edge" id="e1" d="M262 100 L298 100" marker-end="url(#fa)"/>
+      <path class="edge" id="e2" d="M372 100 L412 100" marker-end="url(#fa)"/>
+      <path class="edge" id="e3" d="M652 100 L692 100" marker-end="url(#fa)"/>
+      <!-- row 1 to row 2 -->
+      <path class="edge" id="e4" d="M812 146 L812 180 L147 180 L147 214" marker-end="url(#fa)"/>
+      <!-- row 2 edges -->
+      <path class="edge" id="e5" d="M262 262 L302 262" marker-end="url(#fa)"/>
+      <path class="edge" id="e6" d="M532 262 L572 262" marker-end="url(#fa)"/>
+      <!-- row 2 to row 3 -->
+      <path class="edge" id="e7" d="M752 308 L752 342 L147 342 L147 376" marker-end="url(#fa)"/>
+      <!-- row 3 edges -->
+      <path class="edge" id="e8" d="M262 424 L302 424" marker-end="url(#fa)"/>
+      <path class="edge" id="e9" d="M532 424 L572 424" marker-end="url(#fa)"/>
+      <!-- 9 to goal -->
+      <path class="edge" id="e10" d="M752 470 L752 526" marker-end="url(#fa)"/>
+      </g>
+      <!-- loop 8 -> 5 -->
+      <path class="loop" id="loop" d="M480 376 L480 312" marker-end="url(#fa)"/>
+      <text x="490" y="330" class="gate-label" fill="var(--cloud)">fails a guard or has budget left:</text>
+      <text x="490" y="366" class="gate-label" fill="var(--cloud)">back to step 5 with one change</text>
+      <!-- gate on e1/e2 -->
+      <g class="gatebox">
+        <polygon class="gate" points="342,82 372,100 342,118 312,100"/>
+        <text x="342" y="104" text-anchor="middle" class="gate-label" font-size="9.5">right?</text>
+      </g>
+      <text x="342" y="74" text-anchor="middle" class="gate-label">numbers match the board</text>
+      <!-- gate label on e9 -->
+      <text x="762" y="502" class="gate-label">test sets read once, then release</text>
+
+      <!-- NODES: 230 x 92. row y = 54 / 216 / 378 ; x = 30 / 412(row1) ... -->
+      <!-- Row 1 -->
+      <g class="node both" data-i="0" tabindex="0" role="button" aria-label="Step 1, cloud setup and smoke test">
+        <rect class="box" x="32" y="54" width="230" height="92" rx="8"/>
+        <circle class="numbg" cx="56" cy="78" r="13"/><text class="num" x="56" y="82.5" text-anchor="middle">1</text>
+        <text class="tick" x="56" y="82.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="78" y="76">Codespace + Modal,</text><text class="title" x="78" y="93">smoke test</text>
+        <text class="meta" x="44" y="118">Dev box + L4 · ~$0.50 · Kev-0.8B</text><text class="meta" x="44" y="133">floor, Malkuth-2B bar, harness</text>
+      </g>
+      <g class="node both" data-i="1" tabindex="0" role="button" aria-label="Step 2, accounts and pinned base">
+        <rect class="box" x="412" y="54" width="230" height="92" rx="8"/>
+        <circle class="numbg" cx="436" cy="78" r="13"/><text class="num" x="436" y="82.5" text-anchor="middle">2</text>
+        <text class="tick" x="436" y="82.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="458" y="76">Hugging Face and</text><text class="title" x="458" y="93">the pinned 2B base</text>
+        <text class="meta" x="424" y="118">Dev box + Modal · ~$0 · HF token,</text><text class="meta" x="424" y="133">base revision, 2-min T4 smoke</text>
+      </g>
+      <g class="node cloud" data-i="2" tabindex="0" role="button" aria-label="Step 3, stage-1 baseline">
+        <rect class="box" x="692" y="54" width="240" height="92" rx="8"/>
+        <circle class="numbg" cx="716" cy="78" r="13"/><text class="num" x="716" y="82.5" text-anchor="middle">3</text>
+        <text class="tick" x="716" y="82.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="738" y="76">Stage-1 baseline</text><text class="title" x="738" y="93">on Qwen3.5-2B-Base</text>
+        <text class="meta" x="704" y="118">Cloud · ~$10 · Kev's recipe,</text><text class="meta" x="704" y="133">LoRA r16, 2 seeds, one H100 each</text>
+      </g>
+      <!-- Row 2 -->
+      <g class="node laptop" data-i="3" tabindex="0" role="button" aria-label="Step 4, freeze the evaluation protocol">
+        <rect class="box" x="32" y="216" width="230" height="92" rx="8"/>
+        <circle class="numbg" cx="56" cy="240" r="13"/><text class="num" x="56" y="244.5" text-anchor="middle">4</text>
+        <text class="tick" x="56" y="244.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="78" y="238">Freeze the eval</text><text class="title" x="78" y="255">protocol</text>
+        <text class="meta" x="44" y="280">Dev box · $0 · dev panel, guards,</text><text class="meta" x="44" y="295">unseen-task split, test read once</text>
+      </g>
+      <g class="node cloud" data-i="4" tabindex="0" role="button" aria-label="Step 5, stage-2 combined delta">
+        <rect class="box" x="302" y="216" width="230" height="92" rx="8"/>
+        <circle class="numbg" cx="326" cy="240" r="13"/><text class="num" x="326" y="244.5" text-anchor="middle">5</text>
+        <text class="tick" x="326" y="244.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="348" y="238">Stage 2: breadth</text><text class="title" x="348" y="255">+ depth, one delta</text>
+        <text class="meta" x="314" y="280">Cloud · ~$25 · Malkuth's sources</text><text class="meta" x="314" y="295">+ Kev's hard families, KL anchor</text>
+      </g>
+      <g class="node cloud" data-i="5" tabindex="0" role="button" aria-label="Step 6, calibration and serving check">
+        <rect class="box" x="572" y="216" width="360" height="92" rx="8"/>
+        <circle class="numbg" cx="596" cy="240" r="13"/><text class="num" x="596" y="244.5" text-anchor="middle">6</text>
+        <text class="tick" x="596" y="244.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="618" y="238">Calibrate, then prove the speed</text>
+        <text class="meta" x="584" y="266">Cloud · ~$5 · one temperature on held-out datasets;</text>
+        <text class="meta" x="584" y="281">serve on an L4 / L40S, p50 under 50 ms,</text>
+        <text class="meta" x="584" y="296">long inputs truncated, never refused</text>
+      </g>
+      <!-- Row 3 -->
+      <g class="node both" data-i="6" tabindex="0" role="button" aria-label="Step 7, our own data">
+        <rect class="box" x="32" y="378" width="230" height="92" rx="8"/>
+        <circle class="numbg" cx="56" cy="402" r="13"/><text class="num" x="56" y="406.5" text-anchor="middle">7</text>
+        <text class="tick" x="56" y="406.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="78" y="400">Our own data for</text><text class="title" x="78" y="417">the weak families</text>
+        <text class="meta" x="44" y="442">Dev box + API · ~$50 · generators,</text><text class="meta" x="44" y="457">verified labels, overlap-screened</text>
+      </g>
+      <g class="node cloud" data-i="7" tabindex="0" role="button" aria-label="Step 8, iterate">
+        <rect class="box" x="302" y="378" width="230" height="92" rx="8"/>
+        <circle class="numbg" cx="326" cy="402" r="13"/><text class="num" x="326" y="406.5" text-anchor="middle">8</text>
+        <text class="tick" x="326" y="406.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="348" y="400">Iterate: 15–20 runs,</text><text class="title" x="348" y="417">one change each</text>
+        <text class="meta" x="314" y="442">Cloud · ~$150 · choose on dev,</text><text class="meta" x="314" y="457">two seeds before believing &lt;2 pp</text>
+      </g>
+      <g class="node release" data-i="8" tabindex="0" role="button" aria-label="Step 9, release and submit">
+        <rect class="box" x="572" y="378" width="360" height="92" rx="8"/>
+        <circle class="numbg" cx="596" cy="402" r="13"/><text class="num" x="596" y="406.5" text-anchor="middle">9</text>
+        <text class="tick" x="596" y="406.5" text-anchor="middle" fill="var(--panel)" font-size="12" font-weight="700">✓</text>
+        <text class="title" x="618" y="400">Release on the Hub, submit to JevBench</text>
+        <text class="meta" x="584" y="428">Dev box · ~$10 · adapter + head + temperature, the data,</text>
+        <text class="meta" x="584" y="443">a Space, a model card with every number and</text>
+        <text class="meta" x="584" y="458">its interval, the public-set disclosure, pip install</text>
+      </g>
+      <!-- goal -->
+      <g class="goal" id="goal">
+        <rect x="572" y="528" width="360" height="56" rx="8"/>
+        <text x="752" y="552" text-anchor="middle" font-size="15" font-weight="700" class="big">#1 at ≤2B · score 50–58 · Apache-2.0</text>
+        <text x="752" y="571" text-anchor="middle" font-size="12" fill="var(--muted)">above every model under 4B, above two 12B entries</text>
+      </g>
+    </svg>
+    </div>
+    <p class="hint">Scroll the chart sideways on a phone; the active step scrolls into view.</p>
+  </figure>
+
+  <div class="panel">
+    <div class="controls">
+      <button id="prev" aria-label="Previous step">◀ Prev</button>
+      <button id="play" class="primary" aria-label="Play">▶ Play</button>
+      <button id="next" aria-label="Next step">Next ▶</button>
+      <div class="progress"><i id="prog"></i></div>
+      <span class="counter" id="counter">step 1 of 9</span>
+    </div>
+    <div class="detail" aria-live="polite">
+      <div>
+        <h3><span id="d-title"></span><span class="chip" id="d-where"></span></h3>
+        <p class="what" id="d-what"></p>
+        <div class="cmd" id="d-cmd"></div>
+      </div>
+      <div class="kv">
+        <div><b>Why this step</b><span id="d-why"></span></div>
+        <div><b>Done when</b><span id="d-done"></span></div>
+        <div><b>Cost</b><span id="d-cost"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>3 · How the score works, and why breadth plus depth</h2>
+  <p class="sub">JevBench averages four axes with a harmonic mean, then multiplies by (Intelligence ÷ 50)² when Intelligence is under 50. Below 50, every point of Intelligence is worth about 1.5 points of score. That penalty is the whole story for small models.</p>
+  <div class="meter" id="meter"></div>
+  <div class="formula">score = 4 / (1/I + 1/C + 1/S + 1/K) × (I/50)² if I &lt; 50 &nbsp;·&nbsp; a 2B is priced at the 4B hosted rate, so Cost ≈ 61 for everyone in the class</div>
+  <p class="note">Malkuth's data is all short classification tasks, so it wins the easy tiers but scores 24% on the sealed set and 53 on Calibration. Kev's hard-family and real-document data is what moves the hard tier and Calibration. Nobody at 2B has trained on both; Step 5 does.</p>
+</section>
+
+<section>
+  <h2>4 · Budget and house rules</h2>
+  <div class="budget">
+    <div><b>$1</b><span>Steps 1–2, 4: dev box + a few Modal cents</span></div>
+    <div><b>$10</b><span>Step 3: two stage-1 trials</span></div>
+    <div><b>$30</b><span>Steps 5–6: stage 2 and calibration</span></div>
+    <div><b>$50</b><span>Step 7: data generation and verification</span></div>
+    <div><b>$150</b><span>Step 8: 15–20 iteration runs</span></div>
+    <div><b>$10</b><span>Step 9: Space hosting</span></div>
+  </div>
+  <ol class="rules">
+    <li>Every run names its base revision, data hashes and code commit.</li>
+    <li>Checkpoints are chosen on development partitions; test partitions are read once, at the end.</li>
+    <li>JevBench's public items are reported, never used to pick anything, and we log what we looked at.</li>
+    <li>One change per run; two seeds before believing a difference under two points.</li>
+    <li>Nothing in <code>third_party/</code> is edited; our work is configs, data and scripts.</li>
+  </ol>
+</section>
+</div>
+
+<script>
+(function(){
+  var steps=[
+    {title:"Codespace + Modal, then the smoke test",where:"both",cost:"~$0.50",
+     what:"Push the project to GitHub and open a Codespace: a free 4-core box in the browser that installs the toolchain itself (uv, Python 3.13, Kev, the JevBench harness, Malkuth at their pinned commits). Sign in to Modal. Then serve Kev-0.8B on a Modal L4, send one request by hand, and push the 231 public JevBench items through the official harness from the Codespace. Repeat with Malkuth-2B, the model we have to beat.",
+     why:"Proves every piece works with no local hardware before anything serious costs money, and gives us two reference rows measured on our own pipeline: a floor (Kev-0.8B, public 49%) and the bar (Malkuth-2B, public 70%).",
+     done:"Three summary.json files per model in runs/jevbench/, with accuracies close to the board's.",
+     cmd:"scripts/smoke_cloud.sh && scripts/smoke_cloud.sh dhtocks/malkuth-2b malkuth2b"},
+    {title:"Hugging Face and the pinned 2B base",where:"both",cost:"~$0",
+     what:"Create a Hugging Face account and write token, and add a card to Modal (H100s need one; the $30 monthly credit still applies). Record the exact Hub revision of Qwen3.5-2B-Base and paste it into the study plan, then run Kev's 2-minute T4 smoke of the trainer.",
+     why:"Every number we publish must say which base commit it came from. The T4 smoke confirms the cloud path works before we rent an H100.",
+     done:"experiments/stage1-2b.json has no PIN_ME left, and the Modal smoke finished.",
+     cmd:"uv run --no-sync --project third_party/kev python scripts/pin_base.py && cd third_party/kev && KEV_GPU=T4 uv run modal run modal_app.py::smoke"},
+    {title:"Stage-1 baseline on Qwen3.5-2B-Base",where:"cloud",cost:"~$10",
+     what:"Run Kev's released stage-1 recipe unchanged on the 2B torso: the decision-v7 suite, LoRA rank 16 plus the pointer head, two epochs, learning rate 7e-5, two seeds, one H100 per trial, about 40 minutes each.",
+     why:"This is the first number that is ours. It should land between Kev-0.8B and Kev-4B on new sources. It is also the checkpoint every later delta starts from.",
+     done:"Two trials pulled into runs/, scored on transfer-v4 development, best seed chosen on dev.",
+     cmd:"scripts/train_stage1.sh && scripts/train_stage1.sh pull"},
+    {title:"Freeze the evaluation protocol",where:"laptop",cost:"$0",
+     what:"Write down, before any more training, which development sets choose checkpoints (transfer-v4, hard-v1, documents-v1, devtools-v1, breadth-v1), which guards catch regressions (a short-state panel, option-order sensitivity, ECE on hard-v1), what is report-only (JevBench public, SemIf), and which test sets are read once at the end.",
+     why:"Brooker's bigger torso looked worse because his holdout didn't test it. With a $500 budget, a bad eval is the most expensive mistake available.",
+     done:"docs/EVAL.md exists and the thresholds in it don't move afterwards.",
+     cmd:"# no commands: a document, written once"},
+    {title:"Stage 2: breadth + depth, one delta",where:"cloud",cost:"~$25",
+     what:"Build data mix v1 from Malkuth's commercially licensed classification sources plus Kev's hard-v1, documents-v1 and devtools-v1, screened against the public JevBench items. Train one delta from the best stage-1 seed with replay from the base suite and a KL anchor to the frozen torso, states up to 5k tokens, one epoch, two seeds.",
+     why:"Breadth carries the easy, standard and judge tiers (Malkuth's strength); the hard families carry the hard tier, the sealed set and Calibration (Malkuth's weakness). Training them together, not stacked, is Kev's lesson for small models.",
+     done:"JevBench public hard moves, hard-v1 dev ECE drops, and the short-state guard holds.",
+     cmd:"tools/build_mix.py v1 && kev.train --data data/mix_v1/train.jsonl --init_from <stage1> --replay 6000 --anchor ... --max_state 5120"},
+    {title:"Calibrate, then prove the speed",where:"cloud",cost:"~$5",
+     what:"Fit one temperature on a pool of held-out datasets (not on the training sources), compare against per-type temperatures on our dev split, and keep whichever has lower out-of-fold error. Serve on an L4 and an L40S, measure p50 and p95, and make sure inputs over the context limit are truncated, since a refusal scores as a wrong answer.",
+     why:"Calibration is a quarter of the score and nearly free: Laya shipped unfitted at ECE 0.47 and a refit gave 0.08. Speed is engineering, not modelling; the board adjusts self-hosted latency by 2x plus 0.15 s, so a 40 ms model scores about 90.",
+     done:"calibration.json with the fitted temperature and its out-of-fold ECE; a latency table per GPU.",
+     cmd:"kev/scripts/calibrate_checkpoint.py --run <stage2> --pool heldout && kev.benchmark --remote http://<gpu>:8009"},
+    {title:"Our own data for the weak families",where:"both",cost:"~$50",
+     what:"Write a generator per sealed family where every leader is weak: long policy, temporal and numeric, ambiguous and abstain, probability, paraphrase. Compute answers in code where possible; otherwise two blind open-weight labellers must agree. Screen every record against the public items and release the data.",
+     why:"decider-4b v2 reached #3 by writing generators from the published family names. Brooker never did this, and Kev measured hard-family data as its largest lever.",
+     done:"2–5k kept records per family in data/, screen counts in the manifest, no overlap.",
+     cmd:"tools/gen_family.py long_policy --n 3000 --verify && kev/scripts/screen_overlap.py data/"},
+    {title:"Iterate: 15–20 runs, one change each",where:"cloud",cost:"~$150",
+     what:"In order: stage-2 ablations (anchor on or off, replay size), each new data family alone, a Qwen3.8-2B-distill torso A/B, then full-weight fine-tuning versus LoRA on the final mix. Every run is one change, judged on the frozen dev panel.",
+     why:"Brooker's 18 versions and Kev's 27 rounds agree: three changes do most of the work and most experiments fail. Sequencing the known winners first means a truncated budget still leaves a good model.",
+     done:"Two consecutive changes fail the dev guards, or the budget is spent. Then the test sets are read once.",
+     cmd:"scripts/train_delta.sh experiments/r<N>.json && scripts/eval_dev.sh runs/r<N>"},
+    {title:"Release on Hugging Face, submit to JevBench",where:"release",cost:"~$10",
+     what:"Publish the adapter, pointer head, temperature and training config; the full training data with screen counts; a Space running the server; and a model card with every dev and test number, its interval, the base revision, the JevBench public numbers and a disclosure of how the public set was used. Ship pip install and a Kaggle fine-tuning notebook. Submit through the harness repo with the pinned revision and the serve command.",
+     why:"The graders re-run everything offline in a sealed container and audit the top entries for overlap. Laya's reach came from packaging as much as the model; to displace it we need both.",
+     done:"The row appears on benchmarkheaven.com/jev-models above 38.9, with Apache-2.0 weights.",
+     cmd:"hf upload <you>/krino-2b runs/final && hf upload <you>/krino-data data/"}
+  ];
+  var whereLabel={laptop:"Dev box · free",cloud:"Modal GPU · paid",both:"Dev box + Modal",release:"Release"};
+  var nodes=Array.prototype.slice.call(document.querySelectorAll('#flow .node'));
+  var edges=Array.prototype.slice.call(document.querySelectorAll('#flow .edge'));
+  var goal=document.getElementById('goal'), loop=document.getElementById('loop');
+  var cur=0, timer=null, reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function render(){
+    var trans=[[],[0,1],[2],[3],[4],[5],[6],[7],[8,9]];
+    var active=trans[cur], done=[]; for(var t=0;t<cur;t++) done=done.concat(trans[t]);
+    nodes.forEach(function(n,i){n.classList.toggle('active',i===cur);n.classList.toggle('done',i<cur);});
+    edges.forEach(function(e,i){e.classList.toggle('active',active.indexOf(i)>=0);e.classList.toggle('done',done.indexOf(i)>=0);});
+    goal.classList.toggle('active',cur===8);
+    loop.classList.toggle('active',cur===7);
+    var s=steps[cur];
+    document.getElementById('d-title').textContent=(cur+1)+' · '+s.title;
+    var w=document.getElementById('d-where'); w.textContent=whereLabel[s.where]; w.className='chip '+s.where;
+    document.getElementById('d-what').textContent=s.what;
+    document.getElementById('d-why').textContent=s.why;
+    document.getElementById('d-done').textContent=s.done;
+    document.getElementById('d-cost').textContent=s.cost;
+    document.getElementById('d-cmd').textContent=s.cmd;
+    document.getElementById('prog').style.width=((cur+1)/steps.length*100)+'%';
+    document.getElementById('counter').textContent='step '+(cur+1)+' of '+steps.length;
+    var box=document.getElementById('flowbox'), r=nodes[cur].querySelector('rect.box');
+    if(box.scrollWidth>box.clientWidth){
+      var scale=box.querySelector('svg').getBoundingClientRect().width/960;
+      var x=parseFloat(r.getAttribute('x'))*scale, wdt=parseFloat(r.getAttribute('width'))*scale;
+      box.scrollTo({left:Math.max(0,x-(box.clientWidth-wdt)/2),behavior:reduce?'auto':'smooth'});
+    }
+  }
+  function go(i){cur=(i+steps.length)%steps.length;render();}
+  function stop(){if(timer){clearInterval(timer);timer=null;}document.getElementById('play').textContent='▶ Play';}
+  function play(){
+    if(timer){stop();return;}
+    document.getElementById('play').textContent='❚❚ Pause';
+    timer=setInterval(function(){ if(cur>=steps.length-1){stop();return;} go(cur+1); },5200);
+  }
+  document.getElementById('prev').addEventListener('click',function(){stop();go(cur-1);});
+  document.getElementById('next').addEventListener('click',function(){stop();go(cur+1);});
+  document.getElementById('play').addEventListener('click',function(){ if(!timer && cur>=steps.length-1){go(0);} play(); });
+  nodes.forEach(function(n){
+    n.addEventListener('click',function(){stop();go(+n.getAttribute('data-i'));});
+    n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();stop();go(+n.getAttribute('data-i'));}});
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+    if(e.key==='ArrowRight'){stop();go(cur+1);} else if(e.key==='ArrowLeft'){stop();go(cur-1);} else if(e.key===' '&&e.target===document.body){e.preventDefault();play();}
+  });
+  render();
+
+  // scoring meter
+  var rows=[
+    {name:"Laya",sub:"421M, encoder",I:36.1,C:63.7,S:71.1,K:86.2},
+    {name:"Kev-0.8B",sub:"0.8B, pointer head",I:30.5,C:49.7,S:77.0,K:76.1},
+    {name:"Malkuth-2B",sub:"2B, the bar",I:41.3,C:53.5,S:91.4,K:61.5},
+    {name:"Krino-2B",sub:"target",I:46,C:75,S:90,K:61,target:true}
+  ];
+  function composite(r){var h=4/(1/r.I+1/r.C+1/r.S+1/r.K);if(r.I<50)h*=Math.pow(r.I/50,2);return h;}
+  var meter=document.getElementById('meter'), html='';
+  rows.forEach(function(r,idx){
+    html+='<div class="row'+(r.target?' target':'')+'"><div class="name">'+r.name+'<small>'+r.sub+'</small></div><div class="axes">';
+    ['I','C','S','K'].forEach(function(k){
+      var v=r[k]; html+='<div class="axis"><span>'+({I:'Intelligence',C:'Calibration',S:'Speed',K:'Cost'})[k]+' '+v.toFixed(0)+'</span><div class="bar"><i data-w="'+v+'"'+((k==='I'&&v<50)?' class="low"':'')+'></i></div></div>';
+    });
+    html+='</div><div class="score">'+composite(r).toFixed(1)+'</div></div>';
+  });
+  meter.innerHTML=html;
+  var bars=meter.querySelectorAll('.bar i');
+  function fill(){bars.forEach(function(b){b.style.width=b.getAttribute('data-w')+'%';});}
+  if(reduce){fill();}else{requestAnimationFrame(function(){requestAnimationFrame(fill);});}
+})();
+</script>

@@ -1,0 +1,9 @@
+third_party/
+runs/*
+!runs/.gitkeep
+data/*.jsonl
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env

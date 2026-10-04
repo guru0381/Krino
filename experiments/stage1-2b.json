@@ -1,0 +1,26 @@
+[
+ {
+  "base": "Qwen/Qwen3.5-2B-Base",
+  "base_revision": "PIN_ME_WITH_scripts/pin_base.py",
+  "seed": 0,
+  "epochs": 2,
+  "batch": 4,
+  "accum": 2,
+  "dtype": "bf16",
+  "checkpointing": 1,
+  "p_none_pair": 0.25,
+  "lr": 7e-05
+ },
+ {
+  "base": "Qwen/Qwen3.5-2B-Base",
+  "base_revision": "PIN_ME_WITH_scripts/pin_base.py",
+  "seed": 1,
+  "epochs": 2,
+  "batch": 4,
+  "accum": 2,
+  "dtype": "bf16",
+  "checkpointing": 1,
+  "p_none_pair": 0.25,
+  "lr": 7e-05
+ }
+]
