@@ -14,6 +14,7 @@ MODEL="${1:?usage: serve_modal.sh MODEL NAME [KEY=VAL...] | stop NAME}"
 NAME="${2:?usage: serve_modal.sh MODEL NAME}"
 mkdir -p runs/endpoints
 ENVF="$PWD/runs/endpoints/$NAME.env"
+LOG="$PWD/runs/endpoints/$NAME.deploy.log"
 
 if [ "$MODEL" = "stop" ]; then
   ( cd third_party/kev && uv run --no-sync modal app stop "krino-$NAME" )
@@ -24,16 +25,20 @@ shift 2
 export KEV_MODEL="$MODEL" KEV_APP_NAME="krino-$NAME" KEV_TRUNCATE_STATES=1
 export KEV_GPU="${KEV_GPU:-L4,L40S}"       # right for anything up to ~4B; override with KEV_GPU=H100 for bigger
 for kv in "$@"; do export "$kv"; done
-if [ -f "$ENVF" ]; then . "$ENVF"; fi
+if [ -f "$ENVF" ]; then . "$ENVF"; fi      # reuse the key of an earlier deploy of this name
 export KEV_API_KEY="${KEV_API_KEY:-$(openssl rand -hex 24)}"
+printf 'KEV_API_KEY=%s\nKEV_MODEL=%s\n' "$KEV_API_KEY" "$MODEL" > "$ENVF"   # saved before deploying, so it is never lost
 
-( cd third_party/kev/skills/kev-deploy/scripts && uv run --no-sync --project ../../.. modal deploy kev_serve.py ) | tee "runs/endpoints/$NAME.deploy.log"
-# the label is "<app>-api", so the URL is https://<workspace>--krino-<name>-api.modal.run
-URL=$(grep -oE 'https://[A-Za-z0-9._-]+--krino-'"$NAME"'-api[A-Za-z0-9._-]*\.modal\.run' "runs/endpoints/$NAME.deploy.log" | head -1 || true)
-[ -z "$URL" ] && URL=$(grep -oE 'https://[^ ]+\.modal\.run' "runs/endpoints/$NAME.deploy.log" | head -1 || true)
-[ -z "$URL" ] && { echo "could not find the endpoint URL in the deploy output; see runs/endpoints/$NAME.deploy.log"; exit 1; }
+( cd third_party/kev/skills/kev-deploy/scripts && uv run --no-sync --project ../../.. modal deploy kev_serve.py ) 2>&1 | tee "$LOG"
 
-printf 'ENDPOINT=%s\nKEV_API_KEY=%s\nKEV_MODEL=%s\n' "$URL" "$KEV_API_KEY" "$MODEL" > "$ENVF"
+# Modal no longer prints the endpoint URL on deploy. It is https://<workspace>--<app>-api.modal.run; the workspace is the
+# first path segment of the "View Deployment: https://modal.com/apps/<workspace>/..." line it does print.
+WS=$(sed 's/\x1b\[[0-9;]*m//g' "$LOG" | grep -oE 'modal\.com/apps/[^/ ]+' | head -1 | sed 's|modal\.com/apps/||' || true)
+URL=$(sed 's/\x1b\[[0-9;]*m//g' "$LOG" | grep -oE 'https://[A-Za-z0-9._-]+--krino-'"$NAME"'-api[A-Za-z0-9._-]*\.modal\.run' | head -1 || true)
+[ -z "$URL" ] && [ -n "$WS" ] && URL="https://${WS}--krino-${NAME}-api.modal.run"
+[ -z "$URL" ] && { echo "could not work out the endpoint URL; see $LOG. Set ENDPOINT=... in $ENVF by hand (it is on the app's Modal page)."; exit 1; }
+
+printf 'ENDPOINT=%s\n' "$URL" >> "$ENVF"
 echo "endpoint: $URL   (settings in $ENVF)"
 echo "warming the container (first start downloads the weights; up to a few minutes) ..."
 curl -sL --max-time 900 "$URL/v1/models" -H "authorization: Bearer $KEV_API_KEY" | head -c 400; echo
