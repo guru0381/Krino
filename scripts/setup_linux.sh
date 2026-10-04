@@ -15,7 +15,7 @@ echo "uv $(uv --version)"
 scripts/bootstrap.sh
 
 ( cd third_party/kev && uv python install 3.13 && \
-  if [ "$GPU" = 1 ]; then uv sync --extra serve && uv pip install flash-linear-attention; else uv sync; fi )
+  if [ "$GPU" = 1 ]; then uv sync --extra serve && uv pip install flash-linear-attention; else uv sync --extra serve; fi )
 
 # the harness is stdlib-only and runs inside Kev's venv; its tests want pytest, which Kev's dev group provides
 ( cd third_party/jevbench && uv run --no-sync --project ../kev python -m pytest tests -q )
