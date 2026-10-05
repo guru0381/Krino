@@ -7,10 +7,10 @@ threshold. Every number in `docs/RESULTS.md` says which partition it came from.
 
 | Partition | Suite(s) | Role | Who may read it |
 |---|---|---|---|
-| **Development panel** | `evals/v4/transfer-v4` (new sources, 656 q), `evals/hard-v1` (hard families), `evals/documents-v1` (real CFPB complaints), `evals/devtools-v1` (tool routing), `evals/breadth-v1` (14 public datasets no Kev trained on) | **chooses checkpoints** | every candidate, every seed |
+| **Development panel** | `evals/v4/transfer-v4` (new sources, 656 q), `evals/hard-v1` (hard families), `evals/documents-v1` (real CFPB complaints), `evals/devtools-v1` (tool routing), `evals/krino-breadth/*` (nine datasets neither Kev nor Malkuth trained on: Malkuth's held-out suites, imported by `scripts/import_breadth.sh`; Kev's own `breadth-v1` is in a private mirror we cannot read) | **chooses checkpoints** | every candidate, every seed |
 | **Guard** | `evals/v7/decision-v7` development (trained sources) | catches forgetting | every candidate |
 | **Report-only** | JevBench public items (231, via `scripts/smoke_cloud.sh`), SemIf | reported in RESULTS.md, **never used to choose** | at most once per candidate we would otherwise publish |
-| **Test** | `transfer-v4` test, `breadth-v1` test | the release number | once per released model, read after the release candidate is chosen on development |
+| **Test** | `transfer-v4` test, `krino-breadth/*` test | the release number | once per released model, read after the release candidate is chosen on development |
 
 `scripts/eval_dev.sh RUN NAME` runs the panel and the guard on Modal and prints one table (acc, Brier, ECE, coverage at
 0.9 confidence, option-order flip rate, served temperature).
@@ -20,7 +20,7 @@ threshold. Every number in `docs/RESULTS.md` says which partition it came from.
 A candidate replaces the incumbent only if **all** of these hold, with **two seeds** per candidate:
 
 1. **Gain.** At least one of, on the mean of the two seeds: `hard-v1` dev acc +2.0 pp, or `transfer-v4` dev acc +1.5 pp,
-   or `breadth-v1` dev acc +1.5 pp. Both seeds must move in the same direction on that suite.
+   or the `krino-breadth` mean dev acc +1.5 pp. Both seeds must move in the same direction on that suite.
 2. **No forgetting.** `transfer-v4` dev acc and `decision-v7` dev acc each within −1.0 pp of the incumbent (mean of seeds).
 3. **No worse calibration.** `hard-v1` dev ECE (at the served temperature) does not rise by more than 0.02.
 4. **No worse order sensitivity.** `transfer-v4` permutation flip rate does not rise by more than 2 pp.
@@ -30,8 +30,7 @@ panels; our two stage-1 seeds differed by 3.2 pp on `transfer-v4`). Ties keep th
 
 ## Calibration
 
-The served temperature is fitted on a **held-out-datasets pool** (`breadth-v1` development plus the MMLU-Pro slice Kev
-uses), never on training sources (Kev lesson 5: an in-distribution temperature served `hard-v1` at ECE 0.137 against
+The served temperature is fitted on a **held-out-datasets pool** (the `krino-breadth` development partitions), never on training sources (Kev lesson 5: an in-distribution temperature served `hard-v1` at ECE 0.137 against
 0.067 with a held-out fit). One global temperature is the default; per-question-type temperatures are tried once on the
 same pool and kept only if out-of-fold ECE is lower on `hard-v1` dev.
 

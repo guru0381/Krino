@@ -8,6 +8,7 @@
 #   scripts/train_stage1.sh                 # launches the study and returns; it keeps running if you disconnect
 #   scripts/train_stage1.sh pull            # later: download runs/krino-stage1-2b, ranked by the dev suite
 set -euo pipefail
+export KEV_HF_SECRET="${KEV_HF_SECRET:-huggingface-secret}"
 cd "$(dirname "$0")/.."
 STUDY="${STUDY:-krino-stage1-2b}"
 PLAN="$PWD/experiments/stage1-2b.json"
