@@ -9,6 +9,7 @@ cd "$(dirname "$0")/.."
 MODEL="${1:-jaredpalmer/kev-0.8b}"
 NAME="${2:-kev08b}"
 ENVF="runs/endpoints/$NAME.env"
+export HF_TOKEN="${HF_TOKEN:-$(cat ~/.cache/huggingface/token 2>/dev/null || true)}"
 
 scripts/serve_modal.sh "$MODEL" "$NAME"
 # shellcheck disable=SC1090
