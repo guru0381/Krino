@@ -1,0 +1,1556 @@
+{
+  "suite": "evals/krino-mix-v1",
+  "external": {
+    "files": {
+      "easy.jsonl": {
+        "items": 48,
+        "sha256": "231df3c2c8e88a1a8c137ebe85de96ba70fabd330849098ac7b3c52c70b7172b"
+      },
+      "hard.jsonl": {
+        "items": 111,
+        "sha256": "89e9e6becb33ed88c1de7d42dcc87531b2fb64cfaef4e1986faf7c37b3f80ebb"
+      },
+      "original.jsonl": {
+        "items": 72,
+        "sha256": "5c2414edb3006b8bfcb70fda433f0f9ca015759433849f8d3104328a1f7c4180"
+      }
+    },
+    "items": 231
+  },
+  "n": 8,
+  "normalisation": "casefold, \\w+ tokens, single spaces",
+  "threshold": 0.2,
+  "records": 79484,
+  "offending_records": 0,
+  "max_jaccard_overall": {
+    "min": 0.0,
+    "median": 0.0,
+    "p99": 0.0004,
+    "max": 0.0008
+  },
+  "partitions": {
+    "train": {
+      "aegis": {
+        "records": 6000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 6000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "ambiguous": {
+        "records": 1716,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1716,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "apeach": {
+        "records": 2000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 2000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "arc": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "civil_comments": {
+        "records": 5001,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 5001,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "clinc150": {
+        "records": 3000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 3000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "devtools-v1/aegis": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "devtools-v1/codereviewer": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "devtools-v1/commitpackft": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "devtools-v1/flakeflagger": {
+        "records": 820,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 820,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "documents-v1/cfpb": {
+        "records": 5219,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 1,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0003
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 5219,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "jailbreak_classification": {
+        "records": 1044,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1044,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "judge": {
+        "records": 1714,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1714,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "klue_nli": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "klue_ynat": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "kobest/boolq": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "kobest/copa": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "kobest/hellaswag": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "kobest/sentineg": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "kobest/wic": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "long_policy": {
+        "records": 1714,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 1488,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0004,
+          "p99": 0.0007,
+          "max": 0.0008
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1714,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/ar": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/de": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/en": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/es": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/fr": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/hi": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/ja": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/ko": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/th": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_intent/zh": {
+        "records": 1000,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1000,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/ar": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/de": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/en": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/es": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/fr": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/hi": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/ja": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/ko": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/th": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "massive_scenario/zh": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "multi_hop": {
+        "records": 1714,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1714,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "nsmc": {
+        "records": 1500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "paws_x/de": {
+        "records": 700,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 700,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "paws_x/es": {
+        "records": 700,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 700,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "paws_x/fr": {
+        "records": 700,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 700,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "paws_x/ja": {
+        "records": 700,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 700,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "paws_x/ko": {
+        "records": 700,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 700,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "paws_x/zh": {
+        "records": 700,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 700,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "probability": {
+        "records": 1714,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1714,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "temporal_numeric": {
+        "records": 1714,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1714,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/ar": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/de": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/en": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/es": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/fr": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/hi": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/it": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/ja": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/ru": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "textdetox/zh": {
+        "records": 500,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 500,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "tradeoff": {
+        "records": 1714,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 1714,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "typed_decisions/agent_trace_observability": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "typed_decisions/customer_service": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "typed_decisions/invoice_processing": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "typed_decisions/security_incidents": {
+        "records": 300,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 300,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/ar": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/de": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/el": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/es": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/hi": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/ru": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/th": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/tr": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/vi": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      },
+      "xquad/zh": {
+        "records": 800,
+        "exact_state": 0,
+        "exact_question": 0,
+        "any_shared_8gram": 0,
+        "over_threshold": 0,
+        "max_jaccard": {
+          "min": 0.0,
+          "median": 0.0,
+          "p99": 0.0,
+          "max": 0.0
+        },
+        "max_jaccard_histogram": {
+          "<=0.01": 800,
+          "<=0.05": 0,
+          "<=0.1": 0,
+          "<=0.2": 0,
+          "<=1.0": 0
+        }
+      }
+    }
+  },
+  "note": "counts only; no external text is stored. A record offends on an exact normalised state or question match, or a maximum word 8-gram Jaccard above the threshold."
+}
