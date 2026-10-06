@@ -22,7 +22,7 @@ case "${1:-run}" in
       || { echo "the screen found offending records; fix the mix before training" >&2; exit 1; }
     ( cd third_party/kev && uv run --no-sync modal run modal_app.py::study \
         --suite evals/v7/decision-v7 --plan "$PLAN" \
-        --name "$STUDY" --transfer evals/v4/transfer-v4 --budget 40 --timeout 14400 )
+        --name "$STUDY" --transfer evals/v4/transfer-v4 --budget 50 --timeout 14400 )
     ;;
   pull)
     ( cd third_party/kev && uv run --no-sync modal run modal_app.py::pull --name "$STUDY" )
