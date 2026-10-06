@@ -42,26 +42,32 @@ Also run `kev.benchmark` on `transfer-v9` and the JevBench public set, both repo
 
 ## Step 4 — Freeze the evaluation protocol (dev box, $0) — before any stage-2 training
 
-Development panel (used to choose): transfer-v4 dev, hard-v1 dev, documents-v1 dev, devtools-v1 dev,
-breadth-v1 dev (14 public datasets Kev never trained on).
+Development panel (used to choose): transfer-v4 dev, hard-v1 dev, documents-v1 dev, devtools-v1 dev, and
+`krino-breadth` dev (Malkuth's nine held-out suites; Kev's `breadth-v1` is in a private mirror, see the decision log).
 Guards: a short-state pooled panel for regressions (Kev lesson 2), order-sensitivity and isolation from
 `kev.benchmark`, ECE on hard-v1 dev.
 Report-only: JevBench public (all three files), SemIf.
-Test (read once per released model): transfer-v4 test, breadth-v1 test.
+Test (read once per released model): transfer-v4 test, krino-breadth test.
 Write the panel and thresholds into `docs/EVAL.md` and don't move them afterwards.
 
 ## Step 5 — Stage 2: one combined delta, breadth + depth (cloud, ~$25)
 
-Data mix v1 (`tools/build_mix.py`, forked from Malkuth's builder):
-- **breadth** — Malkuth's commercially-licensed sources only (MASSIVE intent/scenario, PAWS-X, tweet
-  sentiment, CLINC150, KLUE, NSMC, KoBEST, typed-decisions with soft targets, ARC, toxicity, MMMLU, civil
-  toxicity, APEACH, XQuAD-MC, Aegis; **no** XNLI, RACE, BeaverTails, or the unlicensed spam/tweet sources);
-- **depth** — Kev's hard-v1 train, documents-v1 train, devtools-v1 train.
-From the best stage-1 seed with `--init_from`, ONE delta (Kev lesson 3: stacking erodes at small sizes),
-`--replay 6000` from decision-v7, `--anchor` KL to the frozen base (Brooker's self-distillation; verify at
-2B), `--max_state 5120` so long_policy states fit, one epoch, lr 2e-5. Two seeds. Breadth should carry the
-easy/standard/judge tiers to Malkuth's level; depth should take the hard tier, the sealed set and the
-Calibration axis past it — the union nobody at 2B has shipped.
+Data mix v1 (`tools/build_mix.py`, forked from Malkuth's builder; `scripts/build_mix.sh` builds and screens it):
+- **breadth** — Malkuth's commercially licensed sources only: MASSIVE intent/scenario, PAWS-X (six languages, not
+  English), CLINC150, KLUE, NSMC, KoBEST, typed-decisions with soft targets, ARC, textdetox toxicity, civil-comments
+  toxicity (score), APEACH, XQuAD-MC (ten languages, not English), Aegis 2.0 train, jailbreak-classification.
+  **Out**: XNLI, RACE, BeaverTails (non-commercial), tweet sentiment and sms_spam (no licence), CUAD (hurt ledgar),
+  MMMLU and the English PAWS-X / XQuAD slices (they overlap transfer-v4's eval-only mmlu / paws / qnli sources),
+  deepset/prompt-injections (devtools-v1's eval-only source). Korean-only sources at half of Malkuth's counts.
+- **depth** — Kev's hard-v1 train (×2), documents-v1 train, devtools-v1 train, read through `kev.suite.load_split`
+  (checksum-verified; never development or test).
+From the stage-1 incumbent with `init_from`, ONE delta (Kev lesson 3: stacking erodes at small sizes), Kev's own
+delta recipe (`experiments/stage2-2b.json`): `replay 6000` from decision-v7, `max_state 7552` (hard-v1's context;
+`none_pair_max_state 2048` keeps the none-pair siblings on short states), one epoch, lr 2e-5, batch 2 × accum 4,
+bf16, two seeds. No `--anchor` in this run: one change per run; the KL anchor is a Step-8 ablation if stage 2
+forgets. Breadth should carry the easy/standard/judge tiers to Malkuth's level; depth should take the hard tier, the
+sealed set and the Calibration axis past it — the union nobody at 2B has shipped. Launch: `scripts/train_stage2.sh`;
+then `scripts/eval_dev.sh` on both trials and the EVAL.md rule.
 
 ## Step 6 — Calibration and serving (cloud, ~$5)
 
@@ -110,14 +116,24 @@ Submit to JevBench via the harness repo's issue template with the pinned revisio
   breadth benchmark come in (pinned at `af2e1c0`); `--init_from dhtocks/malkuth-2b` is out because the weights
   are research-use-only (XNLI, RACE) and the torso is an unauditable third-party distill. Krino ships
   Apache-2.0, on an official Qwen base, which is itself a reason to pick it over Malkuth. See `docs/MALKUTH.md`.
+- 2026-10-05 — Breadth panel: Kev's `breadth-v1` lives in a private mirror we cannot read, so the panel's breadth
+  axis is Malkuth's nine held-out suites (`scripts/import_breadth.sh` → `evals/krino-breadth/*`), which also gives a
+  like-for-like comparison with Malkuth's and Kev's published numbers. Frozen in `docs/EVAL.md`.
+- 2026-10-05 — Stage-1 incumbent: `krino-stage1-2b/00-trial-0` (transfer-v4 0.735; panel in `docs/RESULTS.md`).
+- 2026-10-05 — Mix v1 exclusions beyond licensing: MMMLU, PAWS-X-en and XQuAD-en are out because transfer-v4's
+  mmlu / paws / qnli slices are built from the same items (MMLU test, PAWS test, SQuAD dev); deepset/prompt-injections
+  is out because devtools-v1's eval-only prompt_injection source is built from it. The panel has to stay held-out
+  for its numbers to mean anything. hard-v1 enters twice: it is the sealed families, and the hard tier is the gap.
+- 2026-10-05 — Stage 2 runs without the KL anchor. Reason: one change per run (the mix is the change); Kev's own
+  deltas used replay alone, and the anchor is a Step-8 ablation if the guard (decision-v7, transfer-v4) drops.
 
 ## Budget tracker
 
 | Step | Planned | Spent | Notes |
 |---|---|---|---|
-| 1–2 | $1 | | Modal credit, inside the free $30 |
-| 3 | $10 | | |
-| 5–6 | $25 | | |
+| 1–2 | $1 | $0.30 | Modal credit, inside the free $30 |
+| 3 | $10 | $6.04 | two H100 trials |
+| 5–6 | $25 | | stage 2: ~$20 for two H100 trials, eval reads ~$3 |
 | 7 | $50 | | |
 | 8 | $150 | | |
 | 9 | $10 | | Space on ZeroGPU needs HF PRO (~$9/mo) or stays CPU |
