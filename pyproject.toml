@@ -1,0 +1,18 @@
+[project]
+name = "krino"
+version = "0.1.0"
+description = "Krino-2B: a System One decision model (Kev architecture) served with per-question-type temperatures"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+dependencies = ["kev[serve] @ git+https://github.com/jaredpalmer/kev.git@fe64b1274ea7f80d4095866df90666abb03e9cf6"]
+
+[project.scripts]
+krino-serve = "krino.serve:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["krino"]

@@ -34,6 +34,16 @@ The served temperature is fitted on a **held-out-datasets pool** (the `krino-bre
 0.067 with a held-out fit). One global temperature is the default; per-question-type temperatures are tried once on the
 same pool and kept only if out-of-fold ECE is lower on `hard-v1` dev.
 
+**Amended 2026-10-07 (typed serving map; a method note, no threshold changes).** JevBench's last published method
+(harness `docs/METHOD-v1.5.md` §3.1) scores the three request types differently: choice by argmax, so only its
+calibration depends on the temperature; a noul answer with P(yes) strictly between 0.20 and 0.80 is an abstention,
+counted wrong; a score answer by the expected level of its distribution. `tools/typed_competence.py` re-scores the
+development rows under those rules: at the global T = 1.95, 52 % of our noul answers abstain and the noul third of
+Intelligence sits below chance (CC −10.0 on the panel) while the choice third is unchanged. So the served map is
+per type — **choice at the ECE-optimal temperature on the held-out pool (unchanged); noul and score at the temperature
+that maximises their typed competence on the development panel**, with their ECE reported — written beside the
+checkpoint as `krino.json` and served by `krino.serve`. Argmax, and therefore every accuracy in this file, is unchanged.
+
 ## Public JevBench items: disclosure log
 
 We run the 231 public items through the official harness to report progress against Malkuth-2B and Kev-0.8B. Rules:
@@ -46,8 +56,23 @@ lists every run below. This log is the disclosure the graders ask for.
 | 2026-10-04 | Kev-0.8B (reference) | 58/72 | 48/48 | 41/111 | pipeline check |
 | 2026-10-04 | Malkuth-2B (reference) | 66/72 | 48/48 | 45/111 | the bar |
 | 2026-10-05 | krino stage1-s0 | 67/72 | 48/48 | 39/111 | Kev base recipe only, T = 1.0 |
+| 2026-10-06 | krino stage2-s0 | 63/72 | 48/48 | 46/111 | mix v1 delta, T = 1.91 (krino-breadth fit); hard tier passes Malkuth-2B |
+| 2026-10-06 | krino stage2-s1 | 66/72 | 48/48 | 47/111 | the stage-2 incumbent, T = 1.95; 161/231 against Malkuth-2B's 159 |
 
 ## Incumbent
 
-`krino-stage1-2b/00-trial-0` (stage 1, seed 0). Its development-panel row is the first line of the comparison table in
-`docs/RESULTS.md` once `scripts/eval_dev.sh` has run on it.
+**`krino-stage2-2b-s1/00-trial-0`** (stage 2, seed 1, served at T = 1.95; Hub `Guru0381/krino-2b@stage2-s1`), from
+2026-10-06: both stage-2 seeds pass every clause against stage-1 seed 0 (`docs/RESULTS.md`, "the decision"). Seed
+tie-break, as in stage 1: transfer-v4 development accuracy. Previous incumbent: `krino-stage1-2b/00-trial-0`.
+
+## Served temperature, per candidate
+
+`scripts/calibrate.sh NAME STUDY/TRIAL` fits the global temperature on the nine `krino-breadth` development rows files
+the panel run produced (never on anything the checkpoint trained on; `kev.rounds` checks the mix manifest's `sources`
+and `inputs.components` for that) and writes it into the local `head.pt`; `hard-v1` dev rows are reported before and
+after, never fitted. The log is kept in `data/calibration/<NAME>.txt`.
+
+| candidate | T | pool ECE raw → fitted (out-of-fold) | hard-v1 dev ECE raw → served |
+|---|---:|---|---|
+| stage2-s0 | 1.91 | 0.120 → 0.018 (0.017 [0.016, 0.037]) | 0.066 → 0.050 |
+| stage2-s1 | 1.95 | 0.119 → 0.021 (0.023 [0.017, 0.041]) | 0.091 → 0.041 |

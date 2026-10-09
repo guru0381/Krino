@@ -17,7 +17,7 @@ ENVF="$PWD/runs/endpoints/$NAME.env"
 LOG="$PWD/runs/endpoints/$NAME.deploy.log"
 
 if [ "$MODEL" = "stop" ]; then
-  ( cd third_party/kev && uv run --no-sync modal app stop "krino-$NAME" )
+  ( cd third_party/kev && uv run --no-sync modal app stop "krino-$NAME" --yes )
   echo "stopped krino-$NAME"; exit 0
 fi
 
@@ -29,7 +29,14 @@ if [ -f "$ENVF" ]; then . "$ENVF"; fi      # reuse the key of an earlier deploy 
 export KEV_API_KEY="${KEV_API_KEY:-$(openssl rand -hex 24)}"
 printf 'KEV_API_KEY=%s\nKEV_MODEL=%s\n' "$KEV_API_KEY" "$MODEL" > "$ENVF"   # saved before deploying, so it is never lost
 
-( cd third_party/kev/skills/kev-deploy/scripts && uv run --no-sync --project ../../.. modal deploy kev_serve.py ) 2>&1 | tee "$LOG"
+# Krino's server (scripts/krino_serve_modal.py): Kev's stack, the checkpoint loaded raw, per-type temperatures from the
+# checkpoint's krino.json (or KRINO_TEMPERATURES=choice=..,noul=..,score=.. passed as a KEY=VAL argument). Deployed from the
+# repository root so the local krino package is mounted. KRINO_SERVER=0 deploys Kev's own kev_serve.py instead (one global T).
+if [ "${KRINO_SERVER:-1}" = "1" ]; then
+  ( uv run --no-sync --project third_party/kev modal deploy scripts/krino_serve_modal.py ) 2>&1 | tee "$LOG"
+else
+  ( cd third_party/kev/skills/kev-deploy/scripts && uv run --no-sync --project ../../.. modal deploy kev_serve.py ) 2>&1 | tee "$LOG"
+fi
 
 # Modal no longer prints the endpoint URL on deploy. It is https://<workspace>--<app>-api.modal.run; the workspace is the
 # first path segment of the "View Deployment: https://modal.com/apps/<workspace>/..." line it does print.

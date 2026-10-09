@@ -76,20 +76,39 @@ one global T; compare against per-type T on our own dev split and keep whichever
 ECE. Serve on an L4 and an L40S, measure p50/p95 with `kev.benchmark --remote`, confirm requests > 16k
 tokens are handled (truncate with `KEV_TRUNCATE_STATES=1` rather than 422, since a refusal scores as wrong).
 
-## Step 7 — Our own data (dev box + LLM API, ~$50)
+## Step 7 — Research, then the cheapest levers first (dev box, $0–3) — done 2026-10-07
 
-Targets, from the sealed-family numbers where every leader is weak: long policy (Jev 28%), temporal /
-numeric (29%), ambiguous / abstain (30%), probability (Imajev 25%), paraphrase.
-Method: generator per family, written from the family description, answers computed by code where
-possible (numeric, probability), otherwise two blind open-weight labelers must agree; screen with
-`screen_overlap.py`; aim for 2–5k kept records per family; soft targets for abstain / judge items.
-Also add 10–15 languages (XNLI, MASSIVE) so one checkpoint covers Laya's multilingual story.
+The research report (`docs/research/jevbench-2b-hard-tier-gains.md`) ranked every intervention by measured gain per
+dollar from the three public research logs on this architecture (strands-decider/Hobson, Kev, Malkuth), the top ≤4B
+board entries and the board's method. Three findings set the plan:
 
-## Step 8 — Iterate (cloud, ~$150)
+1. The board (v1.6.1) is 300 open + 1,200 sealed decisions in seven subject categories, Intelligence is chance-corrected,
+   and the composite is gated by (I/50)²: at our level one Intelligence point ≈ 1.3 composite points, the whole
+   Calibration axis ≈ 0.2. Intelligence is the only axis worth a dollar.
+2. The last published typed rules make a noul answer with P(yes) in (0.20, 0.80) an abstention counted wrong and score
+   a rating by its expected level. Our global T = 1.95 put 52 % of noul answers in the band (noul third below chance).
+   **Run 0** (`tools/typed_competence.py`, $0): a per-type served map, choice 1.95 / noul 0.3 / score 0.5, moved the
+   equal-thirds proxy on the panel from 37.0 to 59.4. Served by the new `krino` package (`krino.serve`,
+   `scripts/krino_serve_modal.py`), map in `krino.json` beside the checkpoint.
+3. Only four kinds of data cleared p < 0.01 on held-out sets in any log, and all are cheap: balanced answer-adequacy
+   rows, real multi-step documents with a frozen 4B teacher's distributions, verifier-filtered LLM-written documents,
+   and replay toward the parent's own distributions.
 
-15–20 runs. Order: (a) stage-2 ablations (anchor on/off, replay size), (b) our data families one at a
-time, (c) a Qwen3.8-2B-distill torso A/B, (d) full-weight SFT vs LoRA on the final data mix.
-Stop when two consecutive changes don't clear the dev guards, or at the budget.
+## Step 8 — The runs the evidence supports (cloud, ≈$70–95 Modal + ≈$50–70 OpenRouter)
+
+- **Run 1 — judge + documents delta** from the incumbent, two seeds (≈$18–22): HelpSteer2 adequacy (CC BY 4.0) +
+  strands' committed `adequacy_gen` + ContractNLI/BoardgameQA/MuSiQue multi-step rows with frozen Qwen3.5-4B
+  distributions + strands' committed generated documents v16/v18; replay 6,000 toward the parent's own distributions.
+  Confirm: EVAL.md gain clause, HelpSteer2 held-out ≥ +0.10, HotpotQA (never trained) ≥ +0.03. Kill: guard below −1.0
+  or hard-v1 ≥ 2 pp down (stacking erosion) → Run 3.
+- **Run 2 — JevBench-shaped abstention delta**, conditional on Run 1 ($50–70 OpenRouter + ≈$12–16 Modal): ≈2,000
+  ambiguous/abstain items written by Qwen3.6-27B and kept on Qwen3.5-397B agreement, look-alike decided cases
+  up-weighted, 300 held out as the hard-difficulty temperature pool. The Kev lineage scores 0.11–0.14 on the sealed
+  ambiguous family against Plumb-4B's 0.60: the largest per-item headroom on the sealed set.
+- **Run 3 — one-delta rebuild** from stage 1 with mix v1 + the new data (≈$40–55), only if Run 1 shows erosion.
+- **Not bought** (null or negative in the logs): the KL anchor to the frozen base, more hard-v1, stacking deltas,
+  per-(type,K) ECE temperatures, permutation averaging, calibration losses, ensembles, two epochs, full-weight SFT,
+  instruct torsos, ShARC/ConditionalQA/RuleTaker/CUAD, temporal/numeric data, a Gemma 4 E2B or MiniCPM5 torso.
 
 ## Step 9 — Release
 
@@ -126,6 +145,15 @@ Submit to JevBench via the harness repo's issue template with the pinned revisio
   for its numbers to mean anything. hard-v1 enters twice: it is the sealed families, and the hard tier is the gap.
 - 2026-10-05 — Stage 2 runs without the KL anchor. Reason: one change per run (the mix is the change); Kev's own
   deltas used replay alone, and the anchor is a Step-8 ablation if the guard (decision-v7, transfer-v4) drops.
+- 2026-10-06 — Stage 2 replaces the incumbent (both seeds pass every EVAL.md clause; `docs/RESULTS.md`). Incumbent:
+  `krino-stage2-2b-s1/00-trial-0` at T = 1.95, chosen between the seeds on transfer-v4 development. decision-v7 sat
+  at −0.75 pp, inside the −1.0 guard but close: the next delta carries the KL-anchor ablation before anything else.
+- 2026-10-07 — Serving temperatures are per type (EVAL.md amendment): the board's typed rules make a soft global T an
+  abstention tax on noul and a shrink on score. Map choice 1.95 / noul 0.3 / score 0.5, chosen on the development panel.
+- 2026-10-07 — The KL-anchor ablation is dropped (null-to-negative in Kev and strands); replay toward the parent's own
+  distributions takes its place. Torso stays Qwen3.5-2B-Base (Gemma 4 E2B measured −8.5 hard-tier points same-recipe).
+- 2026-10-06 — Trial timeouts are 6 h, not 4: H100 hosts on Modal varied 0.113–0.173 s/record on the same config, and a
+  4 h ceiling lost a 75 %-complete seed. The admission bound follows (BUDGET=40 for one trial).
 
 ## Budget tracker
 
@@ -133,8 +161,8 @@ Submit to JevBench via the harness repo's issue template with the pinned revisio
 |---|---|---|---|
 | 1–2 | $1 | $0.30 | Modal credit, inside the free $30 |
 | 3 | $10 | $6.04 | two H100 trials |
-| 5–6 | $25 | | stage 2: ~$20 for two H100 trials, eval reads ~$3 |
+| 5–6 | $25 | ~$70 | stage 2: 3 H100 trials (one timed out on a slow host) ~$62, panel reads and public reads ~$8 |
 | 7 | $50 | | |
 | 8 | $150 | | |
 | 9 | $10 | | Space on ZeroGPU needs HF PRO (~$9/mo) or stays CPU |
-| **Total** | **~$245** | | ceiling $500 |
+| **Total** | **~$245** | ~$77 | ceiling $500. Modal workspace has a $100/month cap (Usage & Billing Settings): raise it before the next training run |

@@ -1,0 +1,4 @@
+fit rows     T=1.95  acc 0.720 -> 0.720 | brier 0.398 -> 0.371 | ece 0.119 -> 0.021 | conf-err 0.064 -> 0.014 | cov@5% 0.24 -> 0.23
+transfer     T=1.95  acc 0.717 -> 0.717 | brier 0.392 -> 0.384 | ece 0.091 -> 0.041 | conf-err 0.048 -> 0.011 | cov@5% 0.21 -> 0.23
+fit rows     OOF T=[1.95, 1.91, 2.00, 1.95, 2.00] ece raw 0.119 [0.101, 0.138] -> oof 0.023 [0.017, 0.041]  delta [-0.113, -0.062] separated=True
+wrote temperature 1.95 to runs/krino-stage2-2b-s1/00-trial-0/checkpoint/head.pt
