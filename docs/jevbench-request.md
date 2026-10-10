@@ -1,8 +1,8 @@
 # JevBench benchmark request — Krino-2B
 
 Issue text for https://github.com/fstandhartinger/jevbench/issues (CONTRIBUTING.md: "File a GitHub issue naming the
-system, its public interface (API, checkpoint or demo) and its license or terms"). Fill the two `<...>` fields from
-`scripts/release.sh publish` and `scripts/release_verify.sh` before posting. Title: **Benchmark request: Krino-2B (Kev
+system, its public interface (API, checkpoint or demo) and its license or terms"). Filled from `scripts/release.sh publish` and
+`scripts/release_verify.sh` on 2026-10-10. Title: **Benchmark request: Krino-2B (Kev
 post-train on Qwen3.5-2B-Base, Apache-2.0)**.
 
 ---
@@ -12,7 +12,7 @@ post-train on Qwen3.5-2B-Base, Apache-2.0)**.
 request, native probabilities for `noul`, `choice` and `score`, nothing generated. Class: jev-rebuild, same lineage as
 kev-0.8B / kev-4B and Malkuth-2B.
 
-**Checkpoint.** https://huggingface.co/Guru0381/krino-2b — tag `v0.1.0`, commit `<HUB_COMMIT_SHA>` (adapter,
+**Checkpoint.** https://huggingface.co/Guru0381/krino-2b — tag `v0.1.0`, commit `ff185abf129206174c67ebbe6058cab4cc9ccaed` (adapter,
 head, tokenizer files, `krino.json`, `provenance.json`, `training_config.json`, model card). Public, no token needed.
 
 **Serving code.** https://github.com/guru0381/Krino — tag `v0.1.0`. The server is Kev's (`kev.serve`, pinned at Kev
@@ -28,8 +28,8 @@ Runs on any CUDA GPU with ~8 GB free in bf16 (an L4 is enough; CUDA graphs and t
 available), offline once the weights are cached. `usage.input_tokens` is reported on every response; there are no
 output tokens. `KEV_TRUNCATE_STATES=1` truncates states over 65,536 tokens instead of answering 422. Verified from a
 fresh container with no credentials (install from the tag, weights without a token, Kev's benchmark through the HTTP
-endpoint): `runs/release-verify/v0.1.0.json` in the repository — hard-v1 dev accuracy `<VERIFY_ACC>`, warm p50
-`<VERIFY_P50>` ms on an L40S.
+endpoint): `docs/release/v0.1.0-verify.json` in the repository — hard-v1 dev accuracy 0.717, warm p50
+12.8 ms on an L40S.
 
 **Served probabilities — please note.** The head is trained at T = 1 and served through a per-type temperature map
 (`krino.json`: choice 1.95, noul 0.30, score 0.50), fitted on our own development partitions, never on JevBench items.

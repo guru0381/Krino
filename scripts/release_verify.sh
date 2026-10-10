@@ -14,3 +14,5 @@ unset HF_TOKEN
 git ls-remote --tags --exit-code https://github.com/guru0381/Krino.git "refs/tags/$KRINO_VERSION" >/dev/null 2>&1 \
   || { echo "tag $KRINO_VERSION is not on github.com/guru0381/Krino (or the repository is still private): push it first" >&2; exit 1; }
 ( uv run --no-sync --project third_party/kev modal run scripts/release_verify_modal.py )
+# runs/ is gitignored: keep the release's verification with the docs
+mkdir -p docs/release && cp "runs/release-verify/$KRINO_VERSION.json" "docs/release/$KRINO_VERSION-verify.json" && echo "copied to docs/release/$KRINO_VERSION-verify.json"

@@ -254,3 +254,13 @@ Test equals development on transfer-v4 to the third decimal: the development pan
 The nine `krino-breadth` suites turned out to have no test partition (Malkuth ships them development-only; their
 manifests list `test.jsonl` with 0 records, and `kev.benchmark --allow-test` refuses an empty population), so EVAL.md's
 test row is corrected and the breadth numbers remain development reads.
+
+## Release v0.1.0: published and verified (2026-10-10)
+
+`Guru0381/krino-2b@v0.1.0` = `ff185abf129206174c67ebbe6058cab4cc9ccaed` (main; adapter, head, tokenizer, `krino.json`,
+provenance, training config and log, the model card). `scripts/release_verify.sh` (`docs/release/v0.1.0-verify.json`):
+a fresh L40S container with no credentials installed `krino` from the GitHub tag, fetched the weights without a token,
+served in 135 s, and read hard-v1 development through the HTTP endpoint — **acc 0.717** (the panel's 0.717), Brier 0.396,
+ECE 0.053 under the per-type map (0.392 / 0.091 raw), 700 records, none rejected or truncated; warm p50 12.8 ms, p95 65 ms
+on a short request, median 18.9 ms / p95 160 ms over the suite's long states; first request 14 s (kernel compilation).
+The JevBench request (`docs/jevbench-request.md`) was filed from these numbers.

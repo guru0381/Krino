@@ -71,7 +71,7 @@ trial did not pass Kev's own in-trial gates (`result.json`); our gate is the rul
 
 | version | candidate | test read | verify read |
 |---|---|---|---|
-| v0.1.0 | `krino-stage2-2b-s1/00-trial-0` | 2026-10-10, `krino-v0.1.0-ungated`: transfer-v4 test 0.790 / 0.311 / 0.110, decision-v7 test 0.848 / 0.227 / 0.074 (RESULTS.md) | `runs/release-verify/v0.1.0.json` |
+| v0.1.0 | `krino-stage2-2b-s1/00-trial-0` | 2026-10-10, `krino-v0.1.0-ungated`: transfer-v4 test 0.790 / 0.311 / 0.110, decision-v7 test 0.848 / 0.227 / 0.074 (RESULTS.md) | `docs/release/v0.1.0-verify.json` |
 
 ## Incumbent
 

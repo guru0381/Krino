@@ -80,7 +80,7 @@ def verify(model: str, suite: str):
     server.terminate()
     result = {"model": model, "version": VERSION, "gpu": GPU, "suite": suite, "ready_s": round(ready, 1),
               "served_models": models, "krino": card,
-              "sample": {"probabilities": sample.get("probabilities"), "usage": sample.get("usage"), "first_request_ms": round(first_ms, 1)},
+              "sample": {"answers": sample.get("answers"), "usage": sample.get("usage"), "first_request_ms": round(first_ms, 1)},
               "latency_ms_warm": {"p50": round(lat[len(lat) // 2], 1), "p95": round(lat[int(len(lat) * 0.95) - 1], 1)},
               "clean": {k: report["clean"][k] for k in ("n", "acc", "brier", "ece")},
               "benchmark_latency_ms": report.get("latency_ms"), "coverage": report.get("coverage"), "remote": report.get("remote")}
