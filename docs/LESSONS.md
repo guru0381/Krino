@@ -91,3 +91,15 @@ Where they disagree, the note says so. Don't re-run a listed negative result wit
 - `noul` follows its option labels instead of the state; `score` is its weakest primitive.
 - Its reach came from packaging: `pip install laya`, a Jev-compatible server, a Kaggle fine-tune notebook,
   LangChain/MCP. We need the same to displace it, not just a higher score.
+
+## Run 1 (2026-10-10): held-out gains on a lever's own format are not transfer
+
+- strands' three p < 0.01 levers reproduced exactly on their own held-outs (HelpSteer2 validation +15, generated
+  adequacy in unseen categories +27, ContractNLI / MuSiQue / BoardgameQA dev +21 to +39) and moved nothing on the suites
+  built to resemble JevBench's sealed families (hard-v1 flat / −2, HotpotQA flat, Kev's judge family *down* on both seeds).
+  A held-out split of the same generator measures format learning. Only a suite shaped like the target measures transfer.
+- Stacking a second delta on stage 2 eroded uniformly rather than anywhere in particular: seven of seven hard families
+  down on one seed, the logical-composition and deadline families down on both. Parent-distribution replay on 12,000
+  rows did not prevent it. The honest reading of Run 1 is Kev's round 13 again.
+- Pre-register the transfer read and the kill line before the run and keep them: the in-format numbers are large enough
+  to argue anyone into taking the checkpoint.

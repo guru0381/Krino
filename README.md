@@ -1,79 +1,84 @@
 # Krino
 
-A 2B-parameter System One decision model, built to be **#1 in the ≤2B class on JevBench**
-and the best open Jev-style model under 4B. *Krino*, from Greek κρίνω: to judge, to decide — the root of
-*criterion*, which is what the model takes as input.
+**Krino-2B** is a 2B-parameter System One decision model: hand it a text and typed questions (`noul` yes/no,
+`choice`, `score`), get a calibrated probability for every option in one forward pass, no generation. *Krino*, from
+Greek κρίνω — to judge, to decide — the root of *criterion*, which is what the model takes as input.
 
-- Same contract as Jev / Kev / Laya: `POST /v1/systemone` with a `state` and typed
-  `noul` / `choice` / `score` questions → calibrated probabilities, one forward pass, no text.
-- Torso: `Qwen/Qwen3.5-2B-Base` — the size nobody ships (Kev stops at 0.8B and jumps to 4B).
-- Recipe: Kev's pointer head + LoRA, Kev's real-document and hard-family data, a
-  frozen-torso KL anchor, one temperature fitted on held-out datasets. Then our own data.
-- Hardware: nothing local. A free GitHub Codespace is the dev box; Modal runs every GPU job (serving for
-  evaluation, and training through Kev's runner) and bills by the second. Budget: $200–500.
+- Weights: [`Guru0381/krino-2b`](https://huggingface.co/Guru0381/krino-2b) (Apache-2.0; the model card is
+  [`docs/model-card.md`](docs/model-card.md)).
+- Architecture and trainer: [Kev](https://github.com/jaredpalmer/kev) (rank-16 LoRA + pointer head on a frozen
+  `Qwen/Qwen3.5-2B-Base`), pinned at `fe64b1274ea7f80d4095866df90666abb03e9cf6`.
+- Wire format: TypeSafe System One (`POST /v1/systemone`), so anything that talks to Jev, Kev or Laya talks to Krino.
+- What is new here: the data mix (Malkuth's breadth recipe with commercially licensed sources only, on top of Kev's
+  hard-family, real-document and developer-tooling data), a frozen evaluation protocol with a two-seed decision rule,
+  and **one serving temperature per question type**, chosen for how each type is actually scored.
 
-Everything we build sits on two pinned open repos (`scripts/bootstrap.sh` fetches them):
+## Serve
 
-| Repo | Pinned commit | Why |
-|---|---|---|
-| [jaredpalmer/kev](https://github.com/jaredpalmer/kev) | `fe64b1274ea7f80d4095866df90666abb03e9cf6` (2026-10-03) | training, serving, eval suites, MLX backend, Modal runner |
-| [fstandhartinger/jevbench](https://github.com/fstandhartinger/jevbench) | `bb05a335bc809e61b20c0f745d25499a82b326fc` (2026-09-29) | the official harness and the 231 public items |
-| [newfull5/malkuth](https://github.com/newfull5/malkuth) | `af2e1c06ded5c448e78394f356319fc2e49f4c94` (2026-09-25) | the ≤2B leader: its data builder, selection set and 29-suite breadth benchmark (`docs/MALKUTH.md`) |
+```bash
+pip install "krino @ git+https://github.com/guru0381/Krino.git@v0.1.0"
+krino-serve --run Guru0381/krino-2b@v0.1.0 --host 0.0.0.0 --port 8008
+```
 
-## Targets
+`krino-serve` is `kev.serve` with the checkpoint loaded raw and each answer re-served at its type's temperature
+(`krino.json`; `GET /v1/krino` shows the map; `KRINO_TEMPERATURES="choice=1,noul=1,score=1"` for raw output). A request
+and its response are in the model card. On Modal: `scripts/serve_modal.sh Guru0381/krino-2b@v0.1.0 krino`.
 
-| Axis | Laya (421M) | Malkuth-2B (class #1) | Kev-0.8B | **Krino-2B target** |
-|---|---|---|---|---|
-| Intelligence | 36 | 41 | 31 | **44–48** |
-| Calibration | 64 | 54 | 50 | **74+** |
-| Speed | 71 | 91 | 77 | **90** |
-| Cost | 86 | 62 | 76 | ~61 (priced at the 4B rate) |
-| **JevBench score** | 30.3 | 38.9 | 18.9 | **50–58** |
+## Results (short)
 
-Composite = harmonic mean of the four axes, × (I/50)² when Intelligence < 50.
-Beating 38.9 makes it #1 at ≤2B; 50+ is top-12 overall, above every model under 4B.
+Development panel, raw temperature — hard-v1 0.717, documents-v1 0.860, devtools-v1 0.682, transfer-v4 0.790
+(option-order flip rate 2.8 %), nine never-trained breadth suites 0.655 mean. JevBench public items (report-only,
+never trained on): 161/231 — original 66/72, easy 48/48, hard 47/111; Malkuth-2B reads 159/231 on the same harness.
+The locked test (read once) and the full tables are in [`docs/RESULTS.md`](docs/RESULTS.md); the partitions, the
+decision rule and the public-item disclosure log are in [`docs/EVAL.md`](docs/EVAL.md).
 
-## The steps
+## How it was built
 
-| # | Step | Where | Status |
-|---|---|---|---|
-| 1 | Codespace + Modal setup, smoke-test the loop with Kev-0.8B on an L4, run the JevBench harness, then the **Malkuth-2B reference row** | dev box + Modal, ~$0.50 | **← you are here** |
-| 2 | Hugging Face token, pin the 2B base revision, 2-minute T4 smoke of the trainer | dev box + Modal | |
-| 3 | Baseline: Kev's stage-1 recipe on Qwen3.5-2B-Base (`experiments/stage1-2b.json`), 2 seeds | cloud, ~$10 | |
-| 4 | Eval protocol: Kev dev suites + JevBench public + our own unseen-family split; **frozen before step 5** | dev box | |
-| 5 | Stage 2: one combined delta — Malkuth's commercial breadth sources + Kev's hard-v1/documents/devtools, replay, KL anchor | cloud, ~$25 | |
-| 6 | Calibration: one temperature fitted on held-out *datasets*; serving check on an L4/L40S | cloud, ~$5 | |
-| 7 | Our data: family-targeted generators for the sealed families where everyone is weak | dev box + LLM API, ~$50 | |
-| 8 | Iterate (15–20 runs), choose on dev, read test once | cloud, ~$150 | |
-| 9 | Release: weights + data + server on the Hub, model card, JevBench submission | dev box | |
+1. **Stage 1** — Kev's base recipe on `decision-v7`, two seeds, chosen on transfer-v4 development.
+2. **Stage 2** — one combined delta: mix v1 (`tools/build_mix.py`, 79,484 records) + 6,000 replayed records, one epoch,
+   two seeds, both passing every clause of the decision rule; the released seed chosen by transfer-v4 development.
+3. **Serving** — Run 0 (`tools/typed_competence.py`): under the board's typed rules a soft global temperature puts half
+   of the yes/no answers into the abstention band; per-type temperatures fix that at no cost to accuracy.
+4. **Run 1** — a second delta of answer-adequacy and multi-step-document rows with parent-distribution replay: +15 to
+   +39 points on its own held-out formats, nothing on the hard families, rejected (two seeds; `docs/LESSONS.md`).
 
-`PLAN.md` has the detail for each step and the decision log. `docs/LESSONS.md` is the
-distilled evidence from Brooker, Kev and Laya that the plan is built on — read it before
-changing the recipe. `docs/MALKUTH.md` is the read on the model we are displacing.
+`PLAN.md` has the steps, the decision log and the budget; `docs/LESSONS.md` the evidence the plan rests on;
+`docs/research/` the research report behind Steps 7–8; `docs/MALKUTH.md` the read on the breadth recipe.
+
+## House rules
+
+- Checkpoints are chosen on development partitions only, two seeds per candidate, one change per run.
+- The test partitions are read once per released model, after the candidate is chosen.
+- JevBench's public items are report-only: never trained on (every training set is screened), never used to choose,
+  every read logged in `docs/EVAL.md`.
+- `third_party/` is pinned and never edited; everything of ours is in `scripts/`, `tools/`, `krino/`, `experiments/`.
 
 ## Quick reference
 
 ```bash
-scripts/bootstrap.sh          # clone kev + jevbench + malkuth at the pinned commits into third_party/
-scripts/setup_linux.sh        # dev box: uv, Python 3.13, Kev, harness, tests (Codespaces runs it automatically)
-scripts/serve_modal.sh MODEL NAME         # put any Kev-format checkpoint behind an HTTPS endpoint on Modal
-scripts/smoke_cloud.sh [MODEL NAME]       # serve on Modal + run the JevBench public items from the dev box
-scripts/run_jevbench.sh NAME [URL|.env]   # harness against any /v1/systemone endpoint → runs/jevbench/NAME
-scripts/setup_mac.sh, smoke_mac.sh        # optional: the same on an Apple Silicon Mac (docs/APPENDIX-mac-setup.md)
-scripts/pin_base.py           # print the current Hub revision of the 2B base, to pin in experiments/
-scripts/train_stage1.sh       # the stage-1 study on Modal (H100 per trial)
+scripts/bootstrap.sh                      # clone kev + jevbench + malkuth + strands at the pinned commits into third_party/
+scripts/setup_linux.sh                    # dev box: uv, Python 3.13, Kev, harness, tests
+scripts/build_mix.sh                      # mix v1 (+ the overlap screen against the public JevBench items)
+scripts/train_stage2.sh | pull            # the stage-2 study on Modal; pull the trials
+scripts/eval_dev.sh RUN NAME              # the development panel + guard for a checkpoint (one table)
+scripts/calibrate.sh NAME STUDY/TRIAL     # the global temperature fit (choice); tools/typed_competence.py the per-type map
+scripts/publish_candidate.sh TRIAL REV    # a candidate to the Hub on its own branch
+scripts/serve_modal.sh MODEL NAME         # any Kev-format checkpoint behind an HTTPS endpoint on Modal
+scripts/run_jevbench.sh NAME URL          # the official harness against an endpoint (public items: report-only)
+scripts/release_test_read.sh              # the locked test, once -> tools/fill_card.py fills the model card
+scripts/release.sh publish | public       # the release to the Hub (+ tag); make the repo public
+scripts/release_verify.sh                 # anonymous install + serve + a dev read, as an evaluator would
+tools/compare_tasks.py A B                # per-family accuracy of two candidates
 ```
 
 Layout:
 
 ```
-third_party/kev        pinned, untouched (we never edit it; changes go through our scripts and configs)
-third_party/jevbench   pinned, untouched
-third_party/malkuth    pinned, untouched (its tools/build_train_mix.py is the template for our tools/build_mix.py)
-experiments/           study plans (JSON) for Kev's Modal runner
-scripts/               thin wrappers so every command is reproducible
-data/                  our own generated/curated records (JSONL in Kev's request+label format)
-runs/                  local eval outputs (gitignored except summaries)
-docs/                  lessons, step guides, the animated roadmap (roadmap.html), model card draft
-.devcontainer/         the Codespaces box definition
+krino/            the package: krino.serve (kev.serve + per-type temperatures), krino.temperatures
+scripts/          every command, reproducible; scripts/*_modal.py are the Modal apps (serving, release verification)
+tools/            data builders and analysis (build_mix, import_strands, typed_competence, compare_tasks, fill_card)
+experiments/      study plans for Kev's Modal runner
+docs/             EVAL.md (protocol), RESULTS.md (numbers), LESSONS.md, model-card.md, research/, jevbench-request.md
+data/             manifests and screens of the data we built (the records themselves are regenerated by the builders)
+third_party/      kev, jevbench, malkuth, strands-decider at pinned commits (gitignored; scripts/bootstrap.sh)
 ```

@@ -58,6 +58,20 @@ lists every run below. This log is the disclosure the graders ask for.
 | 2026-10-05 | krino stage1-s0 | 67/72 | 48/48 | 39/111 | Kev base recipe only, T = 1.0 |
 | 2026-10-06 | krino stage2-s0 | 63/72 | 48/48 | 46/111 | mix v1 delta, T = 1.91 (krino-breadth fit); hard tier passes Malkuth-2B |
 | 2026-10-06 | krino stage2-s1 | 66/72 | 48/48 | 47/111 | the stage-2 incumbent, T = 1.95; 161/231 against Malkuth-2B's 159 |
+| 2026-10-07 | krino stage2-s1, per-type map | 66/72 | 48/48 | 47/111 | serving check of `krino.serve` (choice 1.95 / noul 0.3 / score 0.5): every answer identical, as the map cannot move an argmax; hard-tier Brier 0.844, ECE 0.321 (0.706 / 0.236 at the global 1.95) |
+| — | Run 1 (both seeds) | — | — | — | not read: rejected on the development panel |
+
+## Release reads (once per released model)
+
+`scripts/release_test_read.sh` reads the locked test partitions — transfer-v4 test and decision-v7 test through Kev's
+`locked_test` (it refuses a second read of the same name), the nine `krino-breadth` tests through `kev.benchmark
+--allow-test` — for the release candidate only, after it was chosen on development; `tools/fill_card.py` copies the
+numbers into the model card. `scripts/release_verify.sh` reads hard-v1 *development* through the published artifact
+(anonymous install and serve) to check the release, not to choose anything; the public items are not read again.
+
+| version | candidate | test read | verify read |
+|---|---|---|---|
+| v0.1.0 | `krino-stage2-2b-s1/00-trial-0` | `runs/locked-krino-v0.1.0.md` (RESULTS.md) | `runs/release-verify/v0.1.0.json` |
 
 ## Incumbent
 

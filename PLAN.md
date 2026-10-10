@@ -103,11 +103,15 @@ board entries and the board's method. Three findings set the plan:
   `train_run1.sh`; new held-out panel suites `krino-multihop/hotpotqa`, `krino-judge/helpsteer2` (+ `multistep`,
   `adequacy-gen`). Confirm: EVAL.md gain clause, HelpSteer2 held-out ≥ +0.10, HotpotQA (never trained) ≥ +0.03.
   Kill: guard below −1.0 or hard-v1 ≥ 2 pp down (stacking erosion) → Run 3.
+  **Result (2026-10-10): rejected.** HelpSteer2 +15 on both seeds, HotpotQA flat on both (bar missed), hard-v1 −2.0 / +0.1
+  with seed 0 down in all seven families, typed proxy −2 to −4.5; `docs/RESULTS.md`. The in-format gains did not reach
+  the families built to resemble the sealed set.
 - **Run 2 — JevBench-shaped abstention delta**, conditional on Run 1 ($50–70 OpenRouter + ≈$12–16 Modal): ≈2,000
   ambiguous/abstain items written by Qwen3.6-27B and kept on Qwen3.5-397B agreement, look-alike decided cases
   up-weighted, 300 held out as the hard-difficulty temperature pool. The Kev lineage scores 0.11–0.14 on the sealed
   ambiguous family against Plumb-4B's 0.60: the largest per-item headroom on the sealed set.
 - **Run 3 — one-delta rebuild** from stage 1 with mix v1 + the new data (≈$40–55), only if Run 1 shows erosion.
+  Not bought after Run 1: its data moves nothing the sealed proxies measure, so a rebuild would reproduce stage 2.
 - **Not bought** (null or negative in the logs): the KL anchor to the frozen base, more hard-v1, stacking deltas,
   per-(type,K) ECE temperatures, permutation averaging, calibration losses, ensembles, two epochs, full-weight SFT,
   instruct torsos, ShARC/ConditionalQA/RuleTaker/CUAD, temporal/numeric data, a Gemma 4 E2B or MiniCPM5 torso.
@@ -157,6 +161,10 @@ Submit to JevBench via the harness repo's issue template with the pinned revisio
 - 2026-10-06 — Trial timeouts are 6 h, not 4: H100 hosts on Modal varied 0.113–0.173 s/record on the same config, and a
   4 h ceiling lost a 75 %-complete seed. The admission bound follows (BUDGET=40 for one trial).
 
+- 2026-10-10 — Run 1 rejected (`docs/RESULTS.md`): the strands levers' held-out effects reproduce on their own formats
+  (+15 to +39 points) and do not reach Kev's sealed-shaped families; two seeds, $22. The incumbent stays. Next spend is the
+  release and the JevBench request (Step 9), which returns sealed family-level numbers for ≈$0 and decides Run 2.
+
 ## Budget tracker
 
 | Step | Planned | Spent | Notes |
@@ -164,7 +172,7 @@ Submit to JevBench via the harness repo's issue template with the pinned revisio
 | 1–2 | $1 | $0.30 | Modal credit, inside the free $30 |
 | 3 | $10 | $6.04 | two H100 trials |
 | 5–6 | $25 | ~$70 | stage 2: 3 H100 trials (one timed out on a slow host) ~$62, panel reads and public reads ~$8 |
-| 7 | $50 | | |
-| 8 | $150 | | |
+| 7 | $50 | ~$3 | Run 0 reads and the serving check |
+| 8 | $150 | ~$22 | Run 1: two H100 trials ~$14, parent read and panel reads ~$8 |
 | 9 | $10 | | Space on ZeroGPU needs HF PRO (~$9/mo) or stays CPU |
-| **Total** | **~$245** | ~$77 | ceiling $500. Modal workspace has a $100/month cap (Usage & Billing Settings): raise it before the next training run |
+| **Total** | **~$245** | ~$102 | ceiling $500. Modal workspace has a $100/month cap (Usage & Billing Settings): raise it before the next training run |

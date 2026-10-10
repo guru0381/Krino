@@ -205,3 +205,36 @@ Incumbent `krino-stage2-2b-s1/00-trial-0` at T = 1.0 on the four suites held out
 The incumbent is at chance on answer adequacy and barely above it on multi-step documents, and overconfident on both
 (Brier 0.70–0.78 on binary questions, ECE 0.31–0.38, half the answers above 0.9): exactly the two deficits the research
 report priced as the largest hard-tier levers. Run 1's confirm reads compare to these rows.
+
+## Run 1, both seeds: rejected (2026-10-10, study `krino-run1-2b`, 2 × H100, 1 h 41 m + 1 h 39 m, ≈$14 + ≈$8 of reads)
+
+Panel at T = 1.0 against the incumbent (`krino-stage2-2b-s1/00-trial-0`):
+
+| suite | incumbent | r1-s0 | r1-s1 | bar |
+|---|---:|---:|---:|---|
+| judge/helpsteer2 (held out) | 0.543 | **0.697** | **0.692** | ≥ +10 pp ✓ ✓ |
+| judge/adequacy-gen (categories never trained) | 0.503 | 0.775 | 0.748 | report |
+| multihop/multistep (in-distribution) | 0.535 | 0.838 | 0.824 | report |
+| multihop/hotpotqa (never trained) | 0.784 | 0.785 | 0.771 | ≥ +3 pp ✗ ✗ |
+| hard-v1 | 0.717 | **0.697** | 0.718 | not ≥ 2 pp down ✗ ✓ |
+| documents-v1 | 0.860 | 0.846 | 0.848 | |
+| devtools-v1 | 0.682 | 0.682 | 0.688 | |
+| transfer-v4 | 0.790 | 0.773 | 0.770 | |
+| decision-v7 guard | 0.842 | — | 0.840 | ≥ −1.0 ✓ |
+| breadth mean (9) | 0.655 | — | 0.656 | |
+| typed proxy, DEV-PANEL, per-type map | **59.4** | 57.2 | 54.9 | |
+
+Families (`tools/compare_tasks.py`): seed 0's hard-v1 is down in all seven families (ambiguous −6.0, judge −3.7,
+probability −3.2, temporal −1.7, long_policy −1.5, multi_hop 0, tradeoff +0.5), none significant alone, all one
+direction; seed 1 is flat net (multi_hop +3.2, tradeoff +4.5 against ambiguous −4.0, judge −1.6, long_policy −1.5).
+transfer-v4's contrastive_deadline fell on both seeds (−12.5, −27.5; the second at 2.6 SE) and composition_held_and_or
+on both (−12.5, −9.4). HotpotQA's noul half fell on both (−0.9, −3.1). hard-v1's judge family fell on both seeds
+despite 6,166 adequacy rows, and Kev's long_policy / multi_hop mirrors did not move while ContractNLI / MuSiQue /
+BoardgameQA dev rose 21–39 points: the new rows taught their own formats, not the reading the sealed families need.
+Under the typed rules the score third fell (DEV-PANEL score CC at its best T: 64.6 → 58.7 / 50.2), so the served
+per-type proxy is 2–4.5 points lower on both seeds. Calibration improved wherever the new data touched (HotpotQA ECE
+0.083 → 0.024 / 0.032, HelpSteer2 Brier 0.700 → 0.377) — worth ≈0.2 composite under the gate.
+
+**Decision: Run 1 does not replace the incumbent.** Both seeds miss the HotpotQA bar, seed 0 touches the hard-v1 kill
+line with every family down, and every suite built to resemble the sealed set is flat or down. Served model stays
+`krino-stage2-2b-s1/00-trial-0` with the per-type map. Lesson in `docs/LESSONS.md`.
