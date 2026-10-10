@@ -110,7 +110,7 @@ curl -s http://127.0.0.1:8008/v1/systemone -H 'content-type: application/json' -
 ```
 
 The response is `{"answers": {id: {"type", the answer (`choice` / `noul` / `score`), "confidence", "probabilities"}}, "usage":
-{"input_tokens", ...}, "latency_ms"}` — e.g. `"probabilities": {"returns": 0.71, "shipping": 0.17, "billing": 0.12}` for the
+{"input_tokens", "output_tokens" (the serialized answer; nothing is generated), ...}, "latency_ms"}` — e.g. `"probabilities": {"returns": 0.71, "shipping": 0.17, "billing": 0.12}` for the
 choice, `{"false": 0.3, "true": 0.7}` for the yes/no, one probability per level for the score. The TypeSafe
 Python client works unchanged (`TypeSafeClient(base_url="http://127.0.0.1:8008", api_key="local")`).
 

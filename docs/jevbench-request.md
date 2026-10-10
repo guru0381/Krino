@@ -25,8 +25,8 @@ KEV_TRUNCATE_STATES=1 krino-serve --run Guru0381/krino-2b@v0.1.0 --host 127.0.0.
 ```
 
 Runs on any CUDA GPU with ~8 GB free in bf16 (an L4 is enough; CUDA graphs and the fused Qwen3.5 kernels are used when
-available), offline once the weights are cached. `usage.input_tokens` is reported on every response; there are no
-output tokens. `KEV_TRUNCATE_STATES=1` truncates states over 65,536 tokens instead of answering 422. Verified from a
+available), offline once the weights are cached. `usage.input_tokens` is reported on every response; nothing is
+generated (Kev's `usage.output_tokens` counts the serialized answer, not generated text). `KEV_TRUNCATE_STATES=1` truncates states over 65,536 tokens instead of answering 422. Verified from a
 fresh container with no credentials (install from the tag, weights without a token, Kev's benchmark through the HTTP
 endpoint): `docs/release/v0.1.0-verify.json` in the repository — hard-v1 dev accuracy 0.717, warm p50
 12.8 ms on an L40S.
