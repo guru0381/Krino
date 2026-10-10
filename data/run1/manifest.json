@@ -1,0 +1,66 @@
+{
+  "version": "krino-run1-v1",
+  "partitions": [
+    "train"
+  ],
+  "files": {
+    "train.jsonl": {
+      "sha256": "91edd72225b224fbcdaef74f4bbf35397e3b78952f3c73645e754a6860738ac4",
+      "records": 34890
+    },
+    "calibration.jsonl": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "records": 0
+    },
+    "development.jsonl": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "records": 0
+    },
+    "test.jsonl": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "records": 0
+    }
+  },
+  "trainable_sources": [
+    "boardgame",
+    "contractnli",
+    "helpsteer2",
+    "musique",
+    "replay_decision_v7",
+    "replay_mix_v1",
+    "strands_adequacy_gen",
+    "strands_gen_v16",
+    "strands_gen_v18"
+  ],
+  "eval_only_sources": [],
+  "holdout_sources": [],
+  "eval_only": false,
+  "base_revisions": {},
+  "dataset_revisions": {},
+  "context": {
+    "max_state": 8192,
+    "max_branch": 8192,
+    "max_packed": 16384,
+    "truncate": false
+  },
+  "sources": {
+    "contractnli": 3930,
+    "boardgame": 3000,
+    "replay_decision_v7": 6000,
+    "replay_mix_v1": 6000,
+    "musique": 5979,
+    "helpsteer2": 4866,
+    "strands_gen_v18": 1667,
+    "strands_adequacy_gen": 1300,
+    "strands_gen_v16": 2148
+  },
+  "note": "Run 1: judge + documents delta from the stage-2 incumbent; anchors: frozen Qwen3.5-4B on the multi-step rows, the incumbent on the replay rows",
+  "inputs": {
+    "components": [
+      "krino-run1-new-train",
+      "krino-run1-replay-train",
+      "decision-v7-train",
+      "krino-mix-v1-train"
+    ]
+  }
+}

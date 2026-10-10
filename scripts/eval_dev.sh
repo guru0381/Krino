@@ -12,7 +12,11 @@ cd "$(dirname "$0")/.."
 RUN="${1:?usage: eval_dev.sh RUN NAME | table NAME}"
 NAME="${2:?usage: eval_dev.sh RUN NAME}"
 BREADTH="krino-breadth/belebele krino-breadth/sib200 krino-breadth/rtp_lx krino-breadth/polyguard krino-breadth/goemotions krino-breadth/ledgar krino-breadth/kold krino-breadth/laya_apps krino-breadth/multi_eurlex"
-SUITES="${SUITES:-v7/decision-v7 v4/transfer-v4 hard-v1 documents-v1 devtools-v1 $BREADTH}"
+# added 2026-10-09 (EVAL.md allows adding suites): held-out multi-hop (HotpotQA, never trained) and answer adequacy (HelpSteer2
+# validation; strands' generated adequacy eval); multistep = ContractNLI/MuSiQue/BoardgameQA dev, in-distribution from Run 1 on
+NEW="krino-multihop/hotpotqa krino-multihop/multistep krino-judge/helpsteer2 krino-judge/adequacy-gen"
+for s in $NEW; do [ -d "third_party/kev/evals/$s" ] || NEW=""; done   # only once scripts/build_run1.sh has made them
+SUITES="${SUITES:-v7/decision-v7 v4/transfer-v4 hard-v1 documents-v1 devtools-v1 $BREADTH $NEW}"
 if [ "$RUN" != "table" ]; then
   [ -d third_party/kev/evals/krino-breadth ] || scripts/import_breadth.sh
   JOBS=""
@@ -32,7 +36,7 @@ for s in suites:
     if not p.exists(): print(f"{tag:16s} (missing)"); continue
     r = json.load(p.open()); c = r["clean"]; perm = r.get("permutation") or {}
     flip = perm.get("flip_rate"); flip = 100 * flip if isinstance(flip, (int, float)) else None
-    label = ("breadth/" + tag) if s.startswith("krino-breadth/") else tag
+    label = ("breadth/" + tag) if s.startswith("krino-breadth/") else ("multihop/" + tag) if s.startswith("krino-multihop/") else ("judge/" + tag) if s.startswith("krino-judge/") else tag
     if s.startswith("krino-breadth/"): breadth.append(c["acc"])
     print(f"{label:16s} {c['n']:5d} {num(c['acc'],6)} {num(c['brier'],6)} {num(c['ece'],6)} {num(c.get('coverage_at_0_9'),6)} {num(flip,6,1)}  {r.get('temperature')}")
 if breadth: print(f"{'breadth mean':16s} {len(breadth):5d} {sum(breadth)/len(breadth):6.3f}   (mean accuracy over the {len(breadth)} held-out suites)")

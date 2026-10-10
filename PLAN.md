@@ -96,11 +96,13 @@ board entries and the board's method. Three findings set the plan:
 
 ## Step 8 — The runs the evidence supports (cloud, ≈$70–95 Modal + ≈$50–70 OpenRouter)
 
-- **Run 1 — judge + documents delta** from the incumbent, two seeds (≈$18–22): HelpSteer2 adequacy (CC BY 4.0) +
+- **Run 1 — judge + documents delta** from the incumbent, two seeds (≈$25): HelpSteer2 adequacy (CC BY 4.0) +
   strands' committed `adequacy_gen` + ContractNLI/BoardgameQA/MuSiQue multi-step rows with frozen Qwen3.5-4B
-  distributions + strands' committed generated documents v16/v18; replay 6,000 toward the parent's own distributions.
-  Confirm: EVAL.md gain clause, HelpSteer2 held-out ≥ +0.10, HotpotQA (never trained) ≥ +0.03. Kill: guard below −1.0
-  or hard-v1 ≥ 2 pp down (stacking erosion) → Run 3.
+  distributions + strands' committed generated documents v16/v18; 6,000 decision-v7 + 6,000 mix-v1 replay rows anchored
+  to the parent's own distributions (Kev `--anchor`, KL weight 1.0). Scripts: `build_run1.sh` → `run1_reads.sh` →
+  `train_run1.sh`; new held-out panel suites `krino-multihop/hotpotqa`, `krino-judge/helpsteer2` (+ `multistep`,
+  `adequacy-gen`). Confirm: EVAL.md gain clause, HelpSteer2 held-out ≥ +0.10, HotpotQA (never trained) ≥ +0.03.
+  Kill: guard below −1.0 or hard-v1 ≥ 2 pp down (stacking erosion) → Run 3.
 - **Run 2 — JevBench-shaped abstention delta**, conditional on Run 1 ($50–70 OpenRouter + ≈$12–16 Modal): ≈2,000
   ambiguous/abstain items written by Qwen3.6-27B and kept on Qwen3.5-397B agreement, look-alike decided cases
   up-weighted, 300 held out as the hard-difficulty temperature pool. The Kev lineage scores 0.11–0.14 on the sealed

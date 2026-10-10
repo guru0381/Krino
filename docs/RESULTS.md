@@ -183,3 +183,25 @@ is worth ≈1.3 composite points and the whole Calibration axis ≈0.2 (research
 
 Served map from 2026-10-07: **choice 1.95, noul 0.3, score 0.5** (`krino.json` beside the checkpoint; `krino.serve`).
 Public-set accuracy is unchanged by construction (argmax); the public read with the new server is a serving check.
+
+## Run 1 data and the incumbent's baseline on the new held-out suites (2026-10-10, ~$3 of reads)
+
+Data (`scripts/build_run1.sh`, `data/run1/manifest.json`): 22,890 new rows — MuSiQue 5,979, ContractNLI 3,930, BoardgameQA
+3,000 (strands' multi-step builder, rebuilt bit-identical to its committed checksum, so its frozen Qwen3.5-4B teacher
+file aligns), HelpSteer2 4,866 (balanced adequacy), strands' verifier-filtered generated documents 3,815 and adequacy
+items 1,300 — plus 6,000 decision-v7 and 6,000 mix-v1 replay rows: 34,890 records (choice 22,938 / noul 12,519 / score
+2,269). Overlap screen against the 231 public JevBench items: 0 offending records, max 8-gram Jaccard 0.0009. Anchors
+(`anchors.json`): the 4B teacher's distributions on the multi-step rows, the incumbent's own (raw, T = 1) on the replay rows.
+
+Incumbent `krino-stage2-2b-s1/00-trial-0` at T = 1.0 on the four suites held out of all training (`scripts/eval_dev.sh`):
+
+| suite | n | acc | Brier | ECE | cov@.9 | chance |
+|---|---:|---:|---:|---:|---:|---:|
+| multihop/hotpotqa (comparison questions, never trained) | 959 | 0.784 | 0.312 | 0.083 | 0.521 | 0.50 |
+| multihop/multistep (ContractNLI dev / MuSiQue dev / BoardgameQA valid) | 3,125 | 0.535 | 0.681 | 0.244 | 0.339 | ≈0.33–0.50 |
+| judge/helpsteer2 (HelpSteer2 validation, balanced) | 234 | 0.543 | 0.700 | 0.311 | 0.509 | 0.50 |
+| judge/adequacy-gen (strands' generated adequacy, eval categories) | 302 | 0.503 | 0.775 | 0.378 | 0.646 | 0.50 |
+
+The incumbent is at chance on answer adequacy and barely above it on multi-step documents, and overconfident on both
+(Brier 0.70–0.78 on binary questions, ECE 0.31–0.38, half the answers above 0.9): exactly the two deficits the research
+report priced as the largest hard-tier levers. Run 1's confirm reads compare to these rows.
