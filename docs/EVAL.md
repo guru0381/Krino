@@ -10,7 +10,7 @@ threshold. Every number in `docs/RESULTS.md` says which partition it came from.
 | **Development panel** | `evals/v4/transfer-v4` (new sources, 656 q), `evals/hard-v1` (hard families), `evals/documents-v1` (real CFPB complaints), `evals/devtools-v1` (tool routing), `evals/krino-breadth/*` (nine datasets neither Kev nor Malkuth trained on: Malkuth's held-out suites, imported by `scripts/import_breadth.sh`; Kev's own `breadth-v1` is in a private mirror we cannot read) | **chooses checkpoints** | every candidate, every seed |
 | **Guard** | `evals/v7/decision-v7` development (trained sources) | catches forgetting | every candidate |
 | **Report-only** | JevBench public items (231, via `scripts/smoke_cloud.sh`), SemIf | reported in RESULTS.md, **never used to choose** | at most once per candidate we would otherwise publish |
-| **Test** | `transfer-v4` test, `krino-breadth/*` test | the release number | once per released model, read after the release candidate is chosen on development |
+| **Test** | `transfer-v4` test, `decision-v7` test (`krino-breadth/*` has no test partition: Malkuth's suites are development-only, found at the v0.1.0 read) | the release number | once per released model, read after the release candidate is chosen on development |
 
 `scripts/eval_dev.sh RUN NAME` runs the panel and the guard on Modal and prints one table (acc, Brier, ECE, coverage at
 0.9 confidence, option-order flip rate, served temperature).
@@ -64,14 +64,14 @@ lists every run below. This log is the disclosure the graders ask for.
 ## Release reads (once per released model)
 
 `scripts/release_test_read.sh` reads the locked test partitions — transfer-v4 test and decision-v7 test through Kev's
-`locked_test` (it refuses a second read of the same name), the nine `krino-breadth` tests through `kev.benchmark
---allow-test` — for the release candidate only, after it was chosen on development; `tools/fill_card.py` copies the
-numbers into the model card. `scripts/release_verify.sh` reads hard-v1 *development* through the published artifact
+`locked_test` (it refuses a second read of the same name) — for the release candidate only, after it was chosen on
+development; `tools/fill_card.py` copies the numbers into the model card. Kev's runner names a read `-ungated` when the
+trial did not pass Kev's own in-trial gates (`result.json`); our gate is the rule above, so that suffix is bookkeeping. `scripts/release_verify.sh` reads hard-v1 *development* through the published artifact
 (anonymous install and serve) to check the release, not to choose anything; the public items are not read again.
 
 | version | candidate | test read | verify read |
 |---|---|---|---|
-| v0.1.0 | `krino-stage2-2b-s1/00-trial-0` | `runs/locked-krino-v0.1.0.md` (RESULTS.md) | `runs/release-verify/v0.1.0.json` |
+| v0.1.0 | `krino-stage2-2b-s1/00-trial-0` | 2026-10-10, `krino-v0.1.0-ungated`: transfer-v4 test 0.790 / 0.311 / 0.110, decision-v7 test 0.848 / 0.227 / 0.074 (RESULTS.md) | `runs/release-verify/v0.1.0.json` |
 
 ## Incumbent
 

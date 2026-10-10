@@ -238,3 +238,19 @@ per-type proxy is 2–4.5 points lower on both seeds. Calibration improved where
 **Decision: Run 1 does not replace the incumbent.** Both seeds miss the HotpotQA bar, seed 0 touches the hard-v1 kill
 line with every family down, and every suite built to resemble the sealed set is flat or down. Served model stays
 `krino-stage2-2b-s1/00-trial-0` with the per-type map. Lesson in `docs/LESSONS.md`.
+
+## Release v0.1.0: the locked test (2026-10-10, read once, `scripts/release_test_read.sh`, ≈$1)
+
+Candidate `krino-stage2-2b-s1/00-trial-0` (the incumbent since 2026-10-06), raw temperature, Kev's `locked_test`
+(recorded as `krino-v0.1.0-ungated`: the trial did not pass all of Kev's own in-trial gates, which compare a trial to
+its study's baseline; our gate is `docs/EVAL.md`'s rule, which it passed on 2026-10-06).
+
+| suite | questions | accuracy | Brier | ECE | development (same checkpoint) |
+|---|---:|---:|---:|---:|---:|
+| transfer-v4 test | 656 | **0.790** | 0.311 | 0.110 | 0.790 / 0.312 / 0.090 |
+| decision-v7 test | 1,200 | 0.848 | 0.227 | 0.074 | 0.842 / 0.236 / 0.088 |
+
+Test equals development on transfer-v4 to the third decimal: the development panel chose a checkpoint, not a split.
+The nine `krino-breadth` suites turned out to have no test partition (Malkuth ships them development-only; their
+manifests list `test.jsonl` with 0 records, and `kev.benchmark --allow-test` refuses an empty population), so EVAL.md's
+test row is corrected and the breadth numbers remain development reads.

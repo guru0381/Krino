@@ -53,14 +53,14 @@ model-index:
       - task: { type: text-classification, name: typed decisions, out-of-domain (locked test, read once) }
         dataset: { type: mixed, name: "transfer-v4 test: six never-trained public sources and held-out policy structures" }
         metrics:
-          - { type: accuracy, value: {{transfer_test_acc}} }
-          - { type: brier_score, value: {{transfer_test_brier}} }
-          - { type: expected_calibration_error, value: {{transfer_test_ece}} }
+          - { type: accuracy, value: 0.790 }
+          - { type: brier_score, value: 0.311 }
+          - { type: expected_calibration_error, value: 0.110 }
       - task: { type: text-classification, name: typed decisions, trained sources (locked test, read once) }
         dataset: { type: mixed, name: "decision-v7 test" }
         metrics:
-          - { type: accuracy, value: {{decision_test_acc}} }
-          - { type: brier_score, value: {{decision_test_brier}} }
+          - { type: accuracy, value: 0.848 }
+          - { type: brier_score, value: 0.227 }
 ---
 
 # Krino-2B
@@ -122,11 +122,16 @@ intervals are in [`docs/RESULTS.md`](https://github.com/guru0381/Krino/blob/main
 
 ### Locked test (read once, after the release candidate was chosen on development)
 
+<!-- locked-test:start -->
 | suite | questions | accuracy | Brier | ECE |
 |---|---:|---:|---:|---:|
-| transfer-v4 test (six never-trained public sources + held-out policy structures) | {{transfer_test_n}} | **{{transfer_test_acc}}** | {{transfer_test_brier}} | {{transfer_test_ece}} |
-| decision-v7 test (Kev's trained sources) | {{decision_test_n}} | {{decision_test_acc}} | {{decision_test_brier}} | {{decision_test_ece}} |
-{{breadth_test_rows}}
+| transfer-v4 test (six never-trained public sources + held-out policy structures) | 656 | **0.790** | 0.311 | 0.110 |
+| decision-v7 test (Kev's trained sources) | 1,200 | 0.848 | 0.227 | 0.074 |
+<!-- locked-test:end -->
+
+transfer-v4's test accuracy equals its development accuracy (0.790), so nothing was tuned to the development split.
+The nine breadth suites have no test partition (they are Malkuth's development-only suites); their numbers below are
+development reads, used to choose the checkpoint.
 
 ### Development panel (chose the checkpoint; two seeds, the released seed shown)
 
